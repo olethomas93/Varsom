@@ -1,11 +1,13 @@
 package com.northei.skredvarsel
 
 import HttpClient
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -43,7 +45,9 @@ class AvalanceReport(
 class varsom : AppWidgetProvider() {
     @RequiresApi(Build.VERSION_CODES.S)
     private val job = SupervisorJob()
-
+    companion object {
+        const val ACTION_DOUBLE_CLICK = "com.example.appwidget.DOUBLE_CLICK"
+    }
     @RequiresApi(Build.VERSION_CODES.S)
     private val client = OkHttpClient()
 
@@ -54,10 +58,27 @@ class varsom : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-
+            val remoteViews = RemoteViews(context.packageName, R.layout.varsom_medium)
             updateWidgetViews(client, context)
 
 
+            // Create an Intent for the double-click action
+            val intent = Intent(context, varsom::class.java)
+            intent.action = ACTION_DOUBLE_CLICK
+
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 0, intent, flags
+            )
+
+            // Set the PendingIntent for the double-click action
+            remoteViews.setOnClickPendingIntent(R.id.card, pendingIntent)
+            appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
         }
 
 
@@ -69,10 +90,15 @@ class varsom : AppWidgetProvider() {
         val httpClient = HttpClient(client)
         val url =
             "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/3011/1/"
-
+        updateWidgetViews(client, context)
 
     }
-
+    private fun openBrowser(context: Context, url: String) {
+        // Create an Intent to open the browser with the specified URL
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(browserIntent)
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onAppWidgetOptionsChanged(
@@ -101,6 +127,13 @@ class varsom : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         if (intent != null) {
+
+            if (intent.getAction() != null && intent.getAction().equals(ACTION_DOUBLE_CLICK)) {
+                // Handle the double-click action
+                if (context != null) {
+                    openBrowser(context, "https://www.varsom.no")
+                };
+            }
             if (intent.action == "setRegion") {
                 Log.d("COORD", "POSITION: SETTING REGION")
 
@@ -162,7 +195,12 @@ private fun updateWidgetViews(client: OkHttpClient, context: Context) {
     val smallView = RemoteViews(context.packageName, R.layout.varsom_small)
     val mediumView = RemoteViews(context.packageName, R.layout.varsom_medium)
     val largeView = RemoteViews(context.packageName, R.layout.varsom_large)
-
+    val lang = Locale.getDefault()
+    var langCode = 2
+    Log.d("KANG", "LANGUAGE: ${lang}")
+    if(lang.toString().contains("nb")){
+        langCode = 1
+    }
     val httpClient = HttpClient(client)
     val (yesterdayDate, dayAfterTomorrowDate) = getYesterdayAndDayAfterTomorrow()
     val selectedRegion = context.getSharedPreferences("WidgetPrefs", Context.MODE_PRIVATE)
@@ -174,7 +212,7 @@ private fun updateWidgetViews(client: OkHttpClient, context: Context) {
     var url = ""
     if (selectedRegion != null) {
         url =
-            "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/$selectedRegion/1/$yesterdayDate/$dayAfterTomorrowDate";
+            "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/$selectedRegion/$langCode/$yesterdayDate/$dayAfterTomorrowDate";
 
     } else {
         val obj = JSONObject(coord)
@@ -182,7 +220,7 @@ private fun updateWidgetViews(client: OkHttpClient, context: Context) {
         url =
             "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByCoordinates/Simple/${
                 obj.get("lat")
-            }/${obj.get("lng")}/1/$yesterdayDate/$dayAfterTomorrowDate";
+            }/${obj.get("lng")}/$langCode/$yesterdayDate/$dayAfterTomorrowDate";
     }
     //Log.d("COORD", "POSITION: ${url}")
     // Update the widget views based on the selectedRegion

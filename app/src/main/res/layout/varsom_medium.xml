@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/risk_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:src="@drawable/level_1"/>
 
@@ -35,13 +35,13 @@
             android:layout_marginTop="10dp"
             android:text="3"
             android:textColor="@color/white"
-            android:textSize="40sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/right_container"
-        android:layout_width="295dp"
+        android:layout_width="305dp"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_marginEnd="0dp"
@@ -78,7 +78,7 @@
             android:gravity="center"
             android:text="Det finnes vedvarende svake lag i snødekket. Vær spesielt forsiktig rundt skoggrensen og i områder med tynt snødekke og hard fokksnø."
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
     </LinearLayout>
 
     <LinearLayout

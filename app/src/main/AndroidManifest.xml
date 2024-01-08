@@ -28,6 +28,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.example.appwidget.DOUBLE_CLICK" />
             </intent-filter>
 
             <meta-data
