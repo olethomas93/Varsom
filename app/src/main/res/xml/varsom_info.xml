@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/app_widget_description"
+    android:configure="com.northei.skredvarsel.Configure"
+    android:widgetFeatures="reconfigurable|configuration_optional"
+    android:initialKeyguardLayout="@layout/varsom_large"
+    android:initialLayout="@layout/configure"
+    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewLayout="@layout/varsom_small"
+    android:resizeMode="vertical|horizontal"
+    android:updatePeriodMillis="1800000"
+
+    android:minWidth="110dp"
+    android:minHeight="40dp"
+    android:widgetCategory="home_screen"
+    >
+
+
+
+
+
+
+
+
+</appwidget-provider>
+
+
