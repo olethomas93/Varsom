@@ -59,7 +59,7 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="-20dp"
             android:text="Short Description of Risk"
             android:textColor="@color/white"
             android:textSize="12sp" />
@@ -68,7 +68,7 @@
             android:id="@+id/area_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="0dp"
             android:text="Area Name"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -78,9 +78,9 @@
             android:id="@+id/risk_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="0dp"
             android:gravity="center"
-            android:text="Det finnes vedvarende svake lag i snødekket. Vær spesielt forsiktig rundt skoggrensen og i områder med tynt snødekke og hard fokksnø."
+            android:text="Unstable conditions due to wind slabs in lee areas. A few naturally triggered avalanches may occur. Avalanches can get large. Persistent weak layers may also be triggered due to increased weight load from new snow."
             android:textColor="@color/white"
             android:textSize="11sp" />
     </LinearLayout>

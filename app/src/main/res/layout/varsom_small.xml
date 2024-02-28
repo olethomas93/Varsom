@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Widget.VarsomWidget.AppWidget.Container"
     android:layout_width="130dp"
-    android:layout_height="110dp"
+    android:layout_height="125dp"
     android:padding="0dp"
     android:background="@drawable/widget_bg"
     android:theme="@style/Theme.VarsomWidget.AppWidgetContainer"
@@ -22,8 +22,8 @@
         <!-- Area name view -->
         <ImageView
             android:id="@+id/risk_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
 
             android:src="@drawable/level_1" />
 
@@ -36,7 +36,7 @@
             android:gravity="center_vertical|center"
             android:text="3"
             android:textColor="@android:color/white"
-            android:textSize="40dp"
+            android:textSize="45dp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -44,14 +44,15 @@
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="15dp"
     android:paddingLeft="2dp"
 
     >
     <TextView
         android:id="@+id/widget_current_day"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/area_name"
         android:text="Torsdag"
@@ -59,13 +60,13 @@
          />
     <TextView
         android:id="@+id/area_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/risk_image"
         android:text="Lofoten og Vesterålen"
 
         android:textStyle="bold"
-        android:textSize="11sp"
+        android:textSize="10sp"
         android:textColor="@android:color/white"
 
         />

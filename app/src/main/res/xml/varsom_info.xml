@@ -11,7 +11,7 @@
     android:updatePeriodMillis="1800000"
 
     android:minWidth="110dp"
-    android:minHeight="40dp"
+    android:minHeight="20dp"
     android:widgetCategory="home_screen"
     >
 

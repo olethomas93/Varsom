@@ -88,8 +88,10 @@ class varsom : AppWidgetProvider() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onEnabled(context: Context) {
         val httpClient = HttpClient(client)
-        val url =
-            "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/3011/1/"
+        val url = "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/3011/1/"
+
+        Log.d("DEBUG", "ENABLED")
+
         updateWidgetViews(client, context)
 
     }
@@ -109,15 +111,9 @@ class varsom : AppWidgetProvider() {
     ) {
         val smallView = RemoteViews(context.packageName, R.layout.varsom_small)
         val mediumView = RemoteViews(context.packageName, R.layout.varsom_medium)
-        val largeView = RemoteViews(context.packageName, R.layout.varsom_large)
+        val largeView = RemoteViews(context.packageName, R.layout.varsom_large2)
 
-        //val viewMapping: Map<SizeF, RemoteViews> = mapOf(
-          //  SizeF(180f, 40f) to smallView,
-            //SizeF(200f, 80f) to mediumView,
-            //SizeF(270f, 180f) to largeView
-       // )
-        //val views = RemoteViews(viewMapping)
-        //appWidgetManager.updateAppWidget(appWidgetId, views)
+
         updateWidgetViews(client, context)
 
     }
@@ -135,7 +131,7 @@ class varsom : AppWidgetProvider() {
                 };
             }
             if (intent.action == "setRegion") {
-                Log.d("COORD", "POSITION: SETTING REGION")
+                //Log.d("COORD", "POSITION: SETTING REGION")
 
                 val selectedRegion = intent.getStringExtra("selectedRegion")
 
@@ -194,35 +190,39 @@ class varsom : AppWidgetProvider() {
 private fun updateWidgetViews(client: OkHttpClient, context: Context) {
     val smallView = RemoteViews(context.packageName, R.layout.varsom_small)
     val mediumView = RemoteViews(context.packageName, R.layout.varsom_medium)
-    val largeView = RemoteViews(context.packageName, R.layout.varsom_large)
+    val largeView = RemoteViews(context.packageName, R.layout.varsom_large2)
     val lang = Locale.getDefault()
     var langCode = 2
-    Log.d("KANG", "LANGUAGE: ${lang}")
+    //Log.d("KANG", "LANGUAGE: ${lang}")
     if(lang.toString().contains("nb")){
         langCode = 1
     }
     val httpClient = HttpClient(client)
     val (yesterdayDate, dayAfterTomorrowDate) = getYesterdayAndDayAfterTomorrow()
     val selectedRegion = context.getSharedPreferences("WidgetPrefs", Context.MODE_PRIVATE)
-        .getString("selectedRegion", null)
-    //Log.d("SELECTEDREGION", "ERROR: $selectedRegion")
+        .getString("selectedRegion", "3011")
+
     val coord = context.getSharedPreferences("WidgetPrefs", Context.MODE_PRIVATE)
         .getString("fetchedCoord", null)
-    //Log.d("COORD", "POSITION: ${coord}")
+
     var url = ""
     if (selectedRegion != null) {
         url =
             "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/$selectedRegion/$langCode/$yesterdayDate/$dayAfterTomorrowDate";
 
-    } else {
+    } else if(coord != null) {
         val obj = JSONObject(coord)
+
+
 
         url =
             "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByCoordinates/Simple/${
                 obj.get("lat")
             }/${obj.get("lng")}/$langCode/$yesterdayDate/$dayAfterTomorrowDate";
+    }else{
+        url = "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/AvalancheWarningByRegion/Simple/3011/1/"
     }
-    //Log.d("COORD", "POSITION: ${url}")
+    Log.d("URL", "URL: ${url}")
     // Update the widget views based on the selectedRegion
 
     httpClient.makeRequest(url) { response, error ->
@@ -314,7 +314,7 @@ private fun updateWidgetViews(client: OkHttpClient, context: Context) {
                 val viewMapping: Map<SizeF, RemoteViews> = mapOf(
                     SizeF(180f, 40f) to smallView,
                     SizeF(200f, 80f) to mediumView,
-                    SizeF(270f, 180f) to largeView
+                    SizeF(270f, 200f) to largeView
                 )
                 val views = RemoteViews(viewMapping)
 
@@ -388,7 +388,7 @@ fun parseDateString(dateString: String): String {
 fun parseAndFormatDate(dateString: String): String {
     val dateTime =
         LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-    return dateTime.format(DateTimeFormatter.ofPattern("MM/dd"))
+    return dateTime.format(DateTimeFormatter.ofPattern("dd/MM"))
 }
 
 fun parseJsonToArrayList(jsonString: String): ArrayList<AvalanceReport> {
