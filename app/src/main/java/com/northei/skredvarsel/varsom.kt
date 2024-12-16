@@ -79,6 +79,7 @@ class varsom : AppWidgetProvider() {
             // Set the PendingIntent for the double-click action
             remoteViews.setOnClickPendingIntent(R.id.card, pendingIntent)
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+            updateWidgetViews(client, context)
         }
 
 
@@ -130,6 +131,7 @@ class varsom : AppWidgetProvider() {
                     openBrowser(context, "https://www.varsom.no")
                 };
             }
+
             if (intent.action == "setRegion") {
                 //Log.d("COORD", "POSITION: SETTING REGION")
 

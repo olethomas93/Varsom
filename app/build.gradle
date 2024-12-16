@@ -11,8 +11,8 @@ android {
         applicationId "com.northei.varsomwidget"
         minSdk 26
         targetSdk 33
-        versionCode 6
-        versionName "Schirmer_2.0"
+        versionCode 7
+        versionName "Aksel_3.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
