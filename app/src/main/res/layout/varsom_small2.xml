@@ -1,0 +1,69 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="6dp"
+    android:gravity="start"
+    android:background="@color/warning_level2">
+
+    <!-- ROW 1: ICON LEFT, NUMBER RIGHT -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:weightSum="2">
+
+        <!-- ICON -->
+        <ImageView
+            android:id="@+id/risk_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/level_2"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:layout_marginStart="-24dp"
+
+            android:layout_marginEnd="4dp"/>
+
+        <!-- NUMBER -->
+        <TextView
+            android:id="@+id/risk_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="2"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="72sp"
+            android:gravity="end"
+            android:includeFontPadding="false"/>
+    </LinearLayout>
+
+    <!-- ROW 2: CURRENT DAY -->
+    <TextView
+        android:id="@+id/widget_current_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lørdag"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_marginTop="24dp"
+        android:gravity="start"/>
+
+    <!-- ROW 3: AREA NAME -->
+    <TextView
+        android:id="@+id/area_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lyngen"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="start"/>
+</LinearLayout>

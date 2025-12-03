@@ -10,5 +10,7 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- You can add colors later -->
+    </style>
 </resources>

@@ -1,41 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Existing permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- NEW: Notification permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat"
-        tools:targetApi="31">
-        <activity
-            android:name="com.northei.skredvarsel.Configure"
-            android:exported="false" />
+        android:theme="@style/Theme.AppCompat.Light">
 
+        <!-- Existing widget receiver -->
         <receiver
-            android:name="com.northei.skredvarsel.varsom"
-            android:exported="false">
+            android:name="com.appkungen.skredvarsel.varsom"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="com.example.appwidget.DOUBLE_CLICK" />
+                <action android:name="com.appkungen.skredvarsel.DOUBLE_CLICK" />
+                <action android:name="setRegion" />
+                <action android:name="setCoord" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/varsom_info" />
         </receiver>
 
+        <!-- NEW: Notification receiver -->
+        <receiver
+            android:name="com.appkungen.skredvarsel.AvalancheForecastReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
+
+        <!-- NEW: Boot receiver -->
+        <receiver
+            android:name="com.appkungen.skredvarsel.BootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Existing Configure activity -->
+        <activity
+            android:name="com.appkungen.skredvarsel.Configure"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <!-- NEW: Notification Settings activity -->
+        <activity
+            android:name="com.appkungen.skredvarsel.NotificationSettingsActivity"
+            android:label="Notification Settings"
+            android:parentActivityName="com.appkungen.skredvarsel.Configure"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appkungen.skredvarsel.Configure" />
+        </activity>
+
+        <!-- NEW: Forecast Detail activity -->
+        <activity
+            android:name="com.appkungen.skredvarsel.ForecastDetailActivity"
+            android:label="Forecast Details"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
     </application>
 

@@ -1,80 +1,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Widget.VarsomWidget.AppWidget.Container"
-    android:layout_width="130dp"
-    android:layout_height="125dp"
-    android:padding="0dp"
-    android:background="@drawable/widget_bg"
-    android:theme="@style/Theme.VarsomWidget.AppWidgetContainer"
-    android:id="@+id/card"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="0dp"
-        android:layout_marginTop="0dp"
-        android:orientation="horizontal">
-
-
-        <!-- Number view -->
-
-        <!-- Area name view -->
-        <ImageView
-            android:id="@+id/risk_image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-
-            android:src="@drawable/level_1" />
-
-        <TextView
-            android:id="@+id/risk_number"
-            style="@style/TextAppearance.AppCompat.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center"
-            android:text="3"
-            android:textColor="@android:color/white"
-            android:textSize="45dp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-    <!-- SVG view -->
-
-<LinearLayout
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="15dp"
-    android:paddingLeft="2dp"
+    android:gravity="center"
+    android:padding="2dp"
+    android:background="@color/warning_level2">
 
-    >
+    <!-- Row 1: Icon + Number -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/risk_image"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/level_2"
+            android:layout_marginEnd="2dp"/>
+
+        <TextView
+            android:id="@+id/risk_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textSize="22sp"/>
+    </LinearLayout>
+
+    <!-- Row 2: Area name (small + truncated) -->
+    <!-- Row 2: Day -->
     <TextView
         android:id="@+id/widget_current_day"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/area_name"
-        android:text="Torsdag"
-        android:textColor="@android:color/white"
-         />
+        android:text="Lørdag"
+        android:textColor="@android:color/black"
+        android:textSize="10sp"
+        android:maxLines="1"
+        android:gravity="center"/>
+
+    <!-- Row 3: Area name -->
     <TextView
         android:id="@+id/area_name"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/risk_image"
-        android:text="Lofoten og Vesterålen"
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lyngen"
         android:textStyle="bold"
+        android:textColor="@android:color/black"
         android:textSize="10sp"
-        android:textColor="@android:color/white"
-
-        />
-
-
-    <!-- Current day view -->
-
-
-</LinearLayout>
-
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="center"/>
 </LinearLayout>

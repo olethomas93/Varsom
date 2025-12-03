@@ -1,22 +1,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     style="@style/Widget.VarsomWidget.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="0dp"
-    android:background="@drawable/widget_bg"
-    android:theme="@style/Theme.VarsomWidget.AppWidgetContainer"
+    android:background="@color/warning_level1"
+    android:clickable="true"
     android:orientation="vertical"
-    android:id="@+id/card"
+    android:padding="0dp"
 
 
-    >
+    android:theme="@style/Theme.VarsomWidget.AppWidgetContainer">
+
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="0dp"
         android:columnCount="12"
-        android:rowCount="1"
         android:orientation="horizontal"
+        android:padding="0dp"
+        android:rowCount="1"
 
 
         >
@@ -24,11 +25,10 @@
         <LinearLayout
             android:id="@+id/left_container"
             android:layout_width="0dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_columnWeight="1.5"
             android:layout_height="wrap_content"
-            >
+            android:layout_columnWeight="1.5"
+            android:gravity="center"
+            android:orientation="vertical">
 
 
             <ImageView
@@ -36,7 +36,7 @@
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_weight="3"
-                android:src="@drawable/level_1"/>
+                android:src="@drawable/level_1" />
 
             <TextView
                 android:id="@+id/risk_number"
@@ -53,10 +53,9 @@
             android:id="@+id/right_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_columnWeight="10"
-            >
+            android:gravity="center"
+            android:orientation="vertical">
 
 
             <TextView
@@ -80,8 +79,8 @@
                 android:id="@+id/risk_description"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="Unstable conditions due to wind slabs in lee areas. A few naturally triggered avalanches may occur. Avalanches can get large. Persistent weak layers may also be triggered due to increased weight load from new snow."
                 android:textColor="@color/white"
                 android:textSize="9sp" />
@@ -92,8 +91,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_columnWeight="0.4">
+            android:layout_columnWeight="0.4"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imageView1"
@@ -136,125 +135,121 @@
 
     </GridLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:background="@color/black">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
         android:gravity="center"
-        >
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/risk_yesterday"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:text="3"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="10sp"
-            android:background="@drawable/roundedtext"></TextView>
-
-        <TextView
-            android:id="@+id/item_date_yesterday"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="9sp"
-            android:text="02/09"></TextView>
-</LinearLayout>
+            android:orientation="vertical"
+            android:padding="5dp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
-        android:gravity="center"
-        >
+            <TextView
+                android:id="@+id/risk_yesterday"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginHorizontal="10sp"
+                android:background="@drawable/roundedtext"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/white"
+                android:textSize="15sp"></TextView>
 
-        <TextView
-            android:id="@+id/risk_today"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:text="3"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="10sp"
-            android:background="@drawable/roundedtext"></TextView>
+            <TextView
+                android:id="@+id/item_date_yesterday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="02/09"
+                android:textSize="9sp"></TextView>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/item_date_today"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="9sp"
-            android:text="02/09"></TextView>
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/risk_today"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginHorizontal="10sp"
+                android:background="@drawable/roundedtext"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/white"
+                android:textSize="15sp"></TextView>
+
+            <TextView
+                android:id="@+id/item_date_today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="02/09"
+                android:textSize="9sp"></TextView>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/risk_tomorrow"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginHorizontal="10sp"
+                android:background="@drawable/roundedtext"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/white"
+                android:textSize="15sp"></TextView>
+
+            <TextView
+                android:id="@+id/item_date_tomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="02/09"
+                android:textSize="9sp"></TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/risk_dayafter"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginHorizontal="10sp"
+                android:background="@drawable/roundedtext"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/white"
+                android:textSize="15sp"></TextView>
+
+            <TextView
+                android:id="@+id/item_date_dayafter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="02/09"
+                android:textSize="9sp"></TextView>
+        </LinearLayout>
     </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
-        android:gravity="center"
-        >
-
-        <TextView
-            android:id="@+id/risk_tomorrow"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:text="3"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="10sp"
-            android:background="@drawable/roundedtext"></TextView>
-
-        <TextView
-            android:id="@+id/item_date_tomorrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="9sp"
-            android:text="02/09"></TextView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
-        android:gravity="center"
-        >
-
-        <TextView
-            android:id="@+id/risk_dayafter"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:text="3"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="10sp"
-            android:background="@drawable/roundedtext"></TextView>
-
-        <TextView
-            android:id="@+id/item_date_dayafter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="9sp"
-            android:text="02/09"></TextView>
-    </LinearLayout>
-</LinearLayout>
 
 </LinearLayout>

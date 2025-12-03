@@ -1,12 +1,14 @@
 <resources>
-    <string name="app_name">Skredvarsel</string>
+    <string name="app_name">Varsom Skredvarsel Widget</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
+    <string name="app_widget_description">Viser dagens skredfare for valgt region</string>
     <string name="risk_description_placeholder" />
     <string name="widget_title">Skredvarsel</string>
     <string name="widget_loading">Laster</string>
     <string name="area_name">Tromsø</string>
+    <string name="notification_channel_name">Daglig Skredvarsel</string>
+    <string name="notification_channel_description">Daglige varsler om skredfare</string>
     <string name="title_activity_configure">ConfigureActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
