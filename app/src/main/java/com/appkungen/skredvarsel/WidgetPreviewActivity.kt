@@ -5,10 +5,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.appkungen.varsomwidget.R
+import com.appkungen.skredvarsel.models.*
 
 class WidgetPreviewActivity : AppCompatActivity() {
 
-    private lateinit var forecastList: ArrayList<AvalanceReport>
+    private lateinit var forecastList: ArrayList<AvalancheReport>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +24,7 @@ class WidgetPreviewActivity : AppCompatActivity() {
         fillMediumWidget(today)
     }
 
-    private fun fillMediumWidget(r: AvalanceReport) {
+    private fun fillMediumWidget(r: AvalancheReport) {
 
         findViewById<TextView>(R.id.risk_number).text = r.DangerLevel
         findViewById<TextView>(R.id.area_name).text = r.RegionName

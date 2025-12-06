@@ -33,8 +33,10 @@ import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import com.appkungen.skredvarsel.models.*
 
-class AvalancheWarning(var DangerLevel: String)
+
+
 
 class Region(
     var Name: String,
@@ -306,14 +308,14 @@ class Configure : AppCompatActivity() {
     }
 
     private fun sendBroadcastToWidget(region: String) {
-        val intent = Intent(this, varsom::class.java)
+        val intent = Intent(this, VarsomWidgetProvider::class.java)
         intent.action = WidgetConstants.ACTION_SET_REGION
         intent.putExtra("selectedRegion", region)
         sendBroadcast(intent)
     }
 
     private fun sendBroadcastCoordToWidget(coords: String) {
-        val intent = Intent(this, varsom::class.java)
+        val intent = Intent(this, VarsomWidgetProvider::class.java)
         intent.action = WidgetConstants.ACTION_SET_COORD
         intent.putExtra("fetchedCoord", coords)
         sendBroadcast(intent)

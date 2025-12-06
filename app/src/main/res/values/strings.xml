@@ -5,7 +5,7 @@
     <string name="app_widget_description">Viser dagens skredfare for valgt region</string>
     <string name="risk_description_placeholder" />
     <string name="widget_title">Skredvarsel</string>
-    <string name="widget_loading">Laster</string>
+
     <string name="area_name">Tromsø</string>
     <string name="notification_channel_name">Daglig Skredvarsel</string>
     <string name="notification_channel_description">Daglige varsler om skredfare</string>
@@ -15,7 +15,20 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <!-- Widget Error Messages -->
+    <string name="widget_error_title">Kunne ikke laste data</string>
+    <string name="widget_error_message">Trykk for å prøve igjen</string>
+    <string name="widget_error_no_network">Ingen internettforbindelse</string>
+    <string name="widget_error_timeout">Forespørselen tok for lang tid</string>
+    <string name="widget_error_not_found">Data ikke funnet</string>
+    <string name="widget_error_server">Serverfeil</string>
+    <string name="widget_last_update">Sist oppdatert: %s</string>
 
+    <!-- Widget Loading -->
+    <string name="widget_loading">Laster…</string>
+
+    <!-- Widget Refresh -->
+    <string name="widget_refresh">Oppdater</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -57,4 +70,14 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="glance_weather">Varsom</string>
     <string name="description">Skredvarsling</string>
+    <string name="use_my_location">📍 Use My Location</string>
+    <string name="data_from_www_varsom_no">Data from www.varsom.no</string>
+    <string name="velg_dag">Velg dag</string>
+    <string name="oppsummering">📋 Oppsummering</string>
+    <string name="skredfarevurdering">⚠️ Skredfarevurdering</string>
+    <string name="skredproblemer">🔺 Skredproblemer</string>
+    <string name="sn_dekke_og_fjellv_r">❄️ Snødekke og Fjellvær</string>
+    <string name="r_d">💡 Råd</string>
+    <string name="observasjoner_siste_3_d_gn">👁️ Observasjoner siste 3 døgn</string>
+    <string name="pne_p_varsom_no">🔗 Åpne på Varsom.no</string>
 </resources>

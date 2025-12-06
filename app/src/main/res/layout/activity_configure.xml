@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#1a1a1a"
+    android:fitsSystemWindows="true"
     tools:context="com.appkungen.skredvarsel.Configure">
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -39,7 +40,7 @@
         android:layout_marginBottom="8dp"
         android:background="#2d2d2d"
         android:elevation="2dp"
-        android:text="📍 Use My Location"
+        android:text="@string/use_my_location"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:gravity="center_vertical"
@@ -68,7 +69,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Data from www.varsom.no"
+        android:text="@string/data_from_www_varsom_no"
         android:textColor="#888888"
         android:textSize="12sp" />
 

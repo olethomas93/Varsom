@@ -22,11 +22,11 @@
 
         <!-- Existing widget receiver -->
         <receiver
-            android:name="com.appkungen.skredvarsel.varsom"
+            android:name="com.appkungen.skredvarsel.VarsomWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.appkungen.skredvarsel.DOUBLE_CLICK" />
+                <action android:name="com.appkungen.skredvarsel.REFRESH" />
                 <action android:name="setRegion" />
                 <action android:name="setCoord" />
             </intent-filter>

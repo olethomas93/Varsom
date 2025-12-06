@@ -16,6 +16,8 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import java.util.*
+import com.appkungen.skredvarsel.models.*
+
 
 // Detailed models for the detail API
 data class DetailedAvalancheReport(
@@ -109,7 +111,7 @@ data class MeasurementSubType(
 
 class ForecastDetailActivity : AppCompatActivity() {
 
-    private lateinit var list: ArrayList<AvalanceReport>
+    private lateinit var list: ArrayList<AvalancheReport>
     private lateinit var detailedList: ArrayList<DetailedAvalancheReport>
     private var selectedDayIndex = 1
     private val httpClient = HttpClient(NetworkModule.httpClient)

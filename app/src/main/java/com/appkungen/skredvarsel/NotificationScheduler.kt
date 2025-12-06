@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.appkungen.varsomwidget.R
 import java.util.*
+import com.appkungen.skredvarsel.models.*
 
 object NotificationScheduler {
     private const val NOTIFICATION_CHANNEL_ID = "avalanche_forecast_channel"
