@@ -10,18 +10,32 @@ android {
     defaultConfig {
         applicationId 'com.appkungen.varsomwidget'
         minSdk 26
-        targetSdk 34
-        versionCode 12
-        versionName "Vreeswijk_4.0"
+        targetSdk 36
+        versionCode 15
+        versionName "2.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // ✅ BUILD CONFIG FIELDS GO HERE - Inside defaultConfig
+        buildConfigField "String", "API_BASE_URL", "\"https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api\""
+        buildConfigField "long", "CACHE_EXPIRY_HOURS", "1L"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+            // signingConfig signingConfigs.release
         }
+        debug {
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -32,19 +46,35 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true  // ✅ Explicit - required for BuildConfig fields
     }
 
+
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError true
+
+        fatal 'StopShip'
+        disable 'HardcodedText'
+
+        warning 'MissingTranslation'
+        warning 'UnusedResources'
+
+        disable 'MissingTranslation'  // Can adjust as needed
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.activity:activity-compose:1.7.0"
-    implementation "androidx.compose.material:material:1.4.3"
-    implementation "androidx.compose.ui:ui-tooling-preview"
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.google.android.material:material:1.11.0'
@@ -57,10 +87,19 @@ dependencies {
     // Recommended to use WorkManager to load data for widgets
     implementation "androidx.work:work-runtime-ktx:2.8.1"
 
-    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
     implementation 'androidx.recyclerview:recyclerview:1.3.0'
     implementation 'androidx.core:core-ktx:+'
+    // Unit testing
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.7.0'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.1.0'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+
+// Android testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
 }
