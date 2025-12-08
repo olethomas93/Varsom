@@ -1,6 +1,5 @@
 package com.appkungen.skredvarsel
 
-import HttpClient
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager

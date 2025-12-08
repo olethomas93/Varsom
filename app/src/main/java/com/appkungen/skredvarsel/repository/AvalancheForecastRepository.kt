@@ -1,9 +1,10 @@
 package com.appkungen.skredvarsel.repository
 
-import HttpClient
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.appkungen.skredvarsel.HttpClient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*

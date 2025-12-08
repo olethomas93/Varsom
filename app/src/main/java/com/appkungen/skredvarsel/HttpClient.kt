@@ -1,3 +1,5 @@
+package com.appkungen.skredvarsel
+
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit

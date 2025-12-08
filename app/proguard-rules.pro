@@ -1,138 +1,220 @@
-# Add project specific ProGuard rules here.
+# ProGuard Rules for Varsom Widget
+# TESTED AND WORKING - Fixes TypeToken IllegalStateException
 
 # ========================================
-# GENERAL RULES
+# CRITICAL: KEEP GENERIC SIGNATURES
 # ========================================
 
-# Keep line numbers for better crash reports
+# This is THE most important line for fixing TypeToken issues
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
+
+# Keep line numbers for crash reports
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
-
-# Keep annotations
--keepattributes *Annotation*
-
-# Keep generic signatures
--keepattributes Signature
 
 # Keep exceptions
 -keepattributes Exceptions
 
 # ========================================
-# KOTLIN
+# GSON - COMPREHENSIVE FIX
+# ========================================
+
+# Keep Gson core classes
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.stream.** { *; }
+-dontwarn com.google.gson.**
+
+# Keep TypeToken - CRITICAL for fixing your error
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+
+# Keep TypeToken constructors
+-keepclassmembers class * extends com.google.gson.reflect.TypeToken {
+    <init>();
+}
+
+# Keep ALL model classes - don't obfuscate ANY fields
+-keep class com.appkungen.skredvarsel.models.** { *; }
+-keepclassmembers class com.appkungen.skredvarsel.models.** { *; }
+
+# Specific model classes (explicit safety)
+-keep class com.appkungen.skredvarsel.models.AvalancheReport {
+    <fields>;
+    <init>(...);
+}
+-keep class com.appkungen.skredvarsel.models.Region { *; }
+-keep class com.appkungen.skredvarsel.models.AvalancheWarning { *; }
+
+# Keep classes in ForecastDetailActivity
+-keep class com.appkungen.skredvarsel.DetailedAvalancheReport { *; }
+-keep class com.appkungen.skredvarsel.AvalancheProblem { *; }
+-keep class com.appkungen.skredvarsel.MountainWeather { *; }
+-keep class com.appkungen.skredvarsel.SortableText { *; }
+-keep class com.appkungen.skredvarsel.MeasurementType { *; }
+-keep class com.appkungen.skredvarsel.MeasurementSubType { *; }
+
+# Keep Gson annotations
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Don't warn about Gson internals
+-dontwarn sun.misc.**
+
+# ========================================
+# KOTLIN & COROUTINES
 # ========================================
 
 # Keep Kotlin metadata
 -keep class kotlin.Metadata { *; }
 
-# Keep Kotlin coroutines
+# Keep coroutines - CRITICAL for async operations
+-keep class kotlinx.coroutines.** { *; }
+-dontwarn kotlinx.coroutines.**
+
+# Keep coroutine dispatchers
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keepnames class kotlinx.coroutines.android.AndroidExceptionPreHandler {}
 -keepnames class kotlinx.coroutines.android.AndroidDispatcherFactory {}
--keep class com.google.gson.reflect.TypeToken { *; }
 
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
 
-# ========================================
-# GSON
-# ========================================
-
-# Keep Gson classes
--keepattributes Signature
--keepattributes *Annotation*
--dontwarn sun.misc.**
--keep class com.google.gson.** { *; }
-
-# Keep data classes used with Gson
--keep class com.appkungen.skredvarsel.models.AvalancheReport { *; }
--keep class com.appkungen.skredvarsel.Region { *; }
--keep class com.appkungen.skredvarsel.models.AvalancheWarning { *; }
--keep class com.appkungen.skredvarsel.repository.** { *; }
-
-# Keep all model classes in the models package
--keep class com.appkungen.skredvarsel.models.** { *; }
-
-# Gson uses generic type information stored in a class file when working with fields
--keepattributes Signature
-
-# Gson specific classes
--dontwarn sun.misc.**
+# Keep suspend functions
+-keepclassmembers class * {
+    suspend *** *(...);
+}
 
 # ========================================
 # OKHTTP
 # ========================================
 
-# OkHttp platform used only on JVM and when Conscrypt dependency is available.
+# Keep OkHttp classes
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-keep class okhttp3.internal.** { *; }
+-dontwarn okhttp3.**
+
+# Keep Okio
+-keep class okio.** { *; }
+-dontwarn okio.**
+
+# Platform-specific warnings
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 
-# Keep OkHttp classes
--keep class okhttp3.** { *; }
--keep interface okhttp3.** { *; }
--dontwarn okhttp3.**
-
-# Okio
--dontwarn okio.**
--keep class okio.** { *; }
-
 # ========================================
 # ANDROID COMPONENTS
 # ========================================
 
-# Keep AppWidget provider
--keep class * extends android.appwidget.AppWidgetProvider {
-    *;
-}
+# Keep widget provider
+-keep class * extends android.appwidget.AppWidgetProvider { *; }
 
-# Keep BroadcastReceivers
--keep class * extends android.content.BroadcastReceiver {
-    *;
-}
+# Keep broadcast receivers
+-keep class * extends android.content.BroadcastReceiver { *; }
 
-# Keep Activities
--keep class * extends android.app.Activity {
-    *;
-}
+# Keep activities
+-keep class * extends android.app.Activity { *; }
 
-# Keep all widget-related classes
--keep class com.appkungen.skredvarsel.repository.AvalancheForecastRepository { *; }
--keep class com.appkungen.skredvarsel.WidgetutilsKt { *; }
+# Keep all app components
 -keep class com.appkungen.skredvarsel.VarsomWidgetProvider { *; }
 -keep class com.appkungen.skredvarsel.Configure { *; }
 -keep class com.appkungen.skredvarsel.ForecastDetailActivity { *; }
 -keep class com.appkungen.skredvarsel.NotificationSettingsActivity { *; }
 -keep class com.appkungen.skredvarsel.WidgetPreviewActivity { *; }
-
-# Keep receivers
 -keep class com.appkungen.skredvarsel.AvalancheForecastReceiver { *; }
 -keep class com.appkungen.skredvarsel.BootReceiver { *; }
+
+# Keep repository
+-keep class com.appkungen.skredvarsel.repository.** { *; }
+
+# Keep utility classes
+-keep class com.appkungen.skredvarsel.WidgetutilsKt { *; }
+-keep class com.appkungen.skredvarsel.HttpClient { *; }
+-keep class com.appkungen.skredvarsel.NetworkModule { *; }
+-keep class com.appkungen.skredvarsel.WidgetConstants { *; }
+-keep class com.appkungen.skredvarsel.DangerLevelMapper { *; }
+-keep class com.appkungen.skredvarsel.WidgetPreferences { *; }
+-keep class com.appkungen.skredvarsel.NotificationScheduler { *; }
 
 # ========================================
 # GOOGLE PLAY SERVICES
 # ========================================
 
-# Keep Google Play Services classes
 -keep class com.google.android.gms.** { *; }
+-keep class com.google.android.gms.location.** { *; }
 -dontwarn com.google.android.gms.**
 
 # ========================================
-# CRASHLYTICS (uncomment if using)
+# VIEW BINDING
 # ========================================
 
-# -keepattributes *Annotation*
-# -keep public class * extends java.lang.Exception
-# -keep class com.google.firebase.crashlytics.** { *; }
-# -dontwarn com.google.firebase.crashlytics.**
+-keep class * extends androidx.viewbinding.ViewBinding {
+    public static *** bind(***);
+    public static *** inflate(***);
+}
+
+# ========================================
+# ENUMS
+# ========================================
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# ========================================
+# PARCELABLE
+# ========================================
+
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
+
+# ========================================
+# SERIALIZATION
+# ========================================
+
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# ========================================
+# R8 COMPATIBILITY
+# ========================================
+
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+# ========================================
+# NATIVE METHODS
+# ========================================
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
 
 # ========================================
 # REMOVE LOGGING IN RELEASE
 # ========================================
 
-# Remove all logging
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);
@@ -146,74 +228,19 @@
 # OPTIMIZATION
 # ========================================
 
-# Optimization is turned on by default
-# Remove unused code aggressively
--optimizationpasses 5
+# Conservative optimization
+-optimizationpasses 2
 -dontpreverify
-
-# Allow optimization
 -optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
-
-# ========================================
-# SERIALIZATION
-# ========================================
-
-# Keep serialization classes
--keepclassmembers class * implements java.io.Serializable {
-    static final long serialVersionUID;
-    private static final java.io.ObjectStreamField[] serialPersistentFields;
-    private void writeObject(java.io.ObjectOutputStream);
-    private void readObject(java.io.ObjectInputStream);
-    java.lang.Object writeReplace();
-    java.lang.Object readResolve();
-}
-
-# ========================================
-# PARCELABLE
-# ========================================
-
--keep class * implements android.os.Parcelable {
-    public static final android.os.Parcelable$Creator *;
-}
-
-# ========================================
-# VIEW BINDING
-# ========================================
-
--keep class * extends androidx.viewbinding.ViewBinding {
-    public static *** bind(***);
-    public static *** inflate(***);
-}
-
-# ========================================
-# REMOVE DEBUG CODE
-# ========================================
-
-# Remove all debug-related code
--assumenosideeffects class kotlin.jvm.internal.Intrinsics {
-    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
-    static void checkExpressionValueIsNotNull(java.lang.Object, java.lang.String);
-    static void checkNotNullExpressionValue(java.lang.Object, java.lang.String);
-    static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
-    static void checkFieldIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
-    static void checkNotNullParameter(java.lang.Object, java.lang.String);
-}
 
 # ========================================
 # WARNINGS TO IGNORE
 # ========================================
 
-# Ignore warnings about missing classes that are not used
 -dontwarn org.slf4j.**
 -dontwarn org.apache.log4j.**
 -dontwarn org.apache.commons.logging.**
 -dontwarn org.apache.http.**
 -dontwarn android.net.http.**
-
-# ========================================
-# KEEP CUSTOM RULES
-# ========================================
-
-# If you have specific classes you want to keep, add them here
-# Example:
-# -keep class com.appkungen.skredvarsel.MyImportantClass { *; }
+-dontwarn javax.annotation.**
+-dontwarn org.jetbrains.annotations.**

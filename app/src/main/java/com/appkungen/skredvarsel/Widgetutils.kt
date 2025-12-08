@@ -1,7 +1,6 @@
 package com.appkungen.skredvarsel
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
 import com.appkungen.skredvarsel.models.*
@@ -53,6 +52,6 @@ fun getYesterdayAndDayAfterTomorrow(): Pair<String, String> {
 
 fun parseJsonToArrayList(jsonString: String): ArrayList<AvalancheReport> {
     val gson = Gson()
-    val listType = object : TypeToken<ArrayList<AvalancheReport>>() {}.type
-    return gson.fromJson(jsonString, listType)
+    val array = gson.fromJson(jsonString, Array<AvalancheReport>::class.java)
+    return ArrayList(array.toList())
 }

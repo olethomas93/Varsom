@@ -1,7 +1,5 @@
 package com.appkungen.skredvarsel
 
-import HttpClient
-import NetworkModule
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater

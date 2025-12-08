@@ -1,6 +1,6 @@
 package com.appkungen.skredvarsel
 
-import HttpClient
+
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
