@@ -74,7 +74,9 @@ class VarsomWidgetProvider : AppWidgetProvider() {
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
-        Log.d(TAG, "Widget options changed for widget $appWidgetId")
+        Log.d(TAG, "Widget $appWidgetId resized - updating layout")
+
+        // Oppdater widget med ny layout basert på nye dimensjoner
         updateWidget(context, appWidgetManager, appWidgetId)
     }
 
@@ -298,20 +300,77 @@ class VarsomWidgetProvider : AppWidgetProvider() {
     }
 
     private fun selectLayout(options: Bundle): Int {
-        val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-        val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-        val maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
-        val maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+        val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
+        val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)
+        val maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 0)
+        val maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0)
 
-        val width = maxWidth.coerceAtLeast(minWidth)
-        val height = maxHeight.coerceAtLeast(minHeight)
+        val width = if (maxWidth > 0) maxWidth else minWidth
+        val height = if (maxHeight > 0) maxHeight else minHeight
 
-        return when {
-            width >= 330 && height >= 140 -> R.layout.varsom_large2
-            width >= 330 -> R.layout.varsom_medium
-            width >= 180 && height >= 180 -> R.layout.varsom_small2
-            else -> R.layout.varsom_small
+        Log.d(TAG, "Widget dimensions - Width: $width dp, Height: $height dp")
+        Log.d(TAG, "  Min: ${minWidth}x${minHeight}, Max: ${maxWidth}x${maxHeight}")
+
+        /*
+        MODERNE DEVICES (Pixel 9/10, Galaxy S24, etc):
+        - 1 celle ≈ 150-180 dp (høyoppløsning)
+        - 2 celler ≈ 300-360 dp
+        - 3 celler ≈ 450-540 dp
+        - 4 celler ≈ 600-720 dp
+
+        ELDRE DEVICES:
+        - 1 celle ≈ 70-80 dp
+        - 2 celler ≈ 140-160 dp
+        - 3 celler ≈ 210-240 dp
+        - 4 celler ≈ 280-320 dp
+        */
+
+        val layout = when {
+            // 1x1 - Minste mulige widget
+            // Width < 200 dp (enten 1 celle på moderne enheter, eller 2-3 celler på gamle)
+            width < 200 && height < 200 -> {
+                Log.d(TAG, "→ Selected: varsom_small (1x1 tiny)")
+                R.layout.varsom_small
+            }
+
+            // 4x2+ eller større - Store widgets
+            // Width >= 600 dp (4 celler på moderne enheter)
+            width >= 600 && height >= 180 -> {
+                Log.d(TAG, "→ Selected: varsom_large2 (4x2+ large)")
+                R.layout.varsom_large2
+            }
+
+            // 3x2+ - Medium-store brede widgets
+            // Width >= 450 dp (3 celler på moderne enheter)
+            width >= 450 -> {
+                Log.d(TAG, "→ Selected: varsom_medium (3x+ wide)")
+                R.layout.varsom_medium
+            }
+
+            // 2x2 eller 2x3 - VERTIKAL small2 layout
+            // Width 200-449 dp (2 celler bred på moderne enheter)
+            // Height >= 180 dp (2+ celler høy)
+            // DETTE ER FOR PIXEL 10: 352×200 = 2×2 celler
+            width >= 200 && width < 450 && height >= 180 -> {
+                Log.d(TAG, "→ Selected: varsom_small2 (2x2 or 2x3 vertical)")
+                R.layout.varsom_small2
+            }
+
+            // 2x1 - Horisontal stripe
+            // Width >= 200 men Height < 180 (2 bred × 1 høy)
+            width >= 200 && height < 180 -> {
+                Log.d(TAG, "→ Selected: varsom_small (2x1 horizontal)")
+                R.layout.varsom_small
+            }
+
+            // Fallback - Small
+            else -> {
+                Log.d(TAG, "→ Selected: varsom_small (fallback)")
+                R.layout.varsom_small
+            }
         }
+
+        return layout
     }
 
     private fun populateWidgetViews(

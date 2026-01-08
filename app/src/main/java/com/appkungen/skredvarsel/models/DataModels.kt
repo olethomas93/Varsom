@@ -12,15 +12,3 @@ data class AvalancheReport(
     val PublishTime: String
 )
 
-data class Region(
-    val Name: String,
-    val Id: String,
-    val image: Int,
-    val color: Int,
-    val TypeName: String,
-    val AvalancheWarningList: Array<AvalancheWarning>
-)
-
-data class AvalancheWarning(
-    val DangerLevel: String
-)

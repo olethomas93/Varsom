@@ -22,6 +22,15 @@ class WidgetPreferences(context: Context) {
             }
         }
 
+    var selectedRegionName: String?
+        get() = prefs.getString("selectedRegionName", null)
+        set(value) {
+            prefs.edit().apply {
+                putString("selectedRegionName", value)
+                apply()
+            }
+        }
+
     var fetchedCoord: String?
         get() = prefs.getString(WidgetConstants.PREF_FETCHED_COORD, null)
         set(value) {
@@ -30,6 +39,7 @@ class WidgetPreferences(context: Context) {
                 if (value != null) {
                     // Clear region when setting coordinates
                     remove(WidgetConstants.PREF_SELECTED_REGION)
+                    remove("selectedRegionName")
                 }
                 apply()
             }
