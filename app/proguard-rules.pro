@@ -86,9 +86,7 @@
 }
 
 # Keep suspend functions
--keepclassmembers class * {
-    suspend *** *(...);
-}
+
 
 # ========================================
 # OKHTTP
@@ -110,6 +108,12 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 
+# Keep ALL model classes
+-keep class com.appkungen.skredvarsel.models.** { *; }
+-keepclassmembers class com.appkungen.skredvarsel.models.** {
+    <fields>;
+    <init>(...);
+}
 # ========================================
 # ANDROID COMPONENTS
 # ========================================

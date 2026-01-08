@@ -26,7 +26,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.appkungen.skredvarsel.models.AvalancheWarning
+import com.appkungen.skredvarsel.models.Region
 import com.appkungen.varsomwidget.R
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -45,14 +45,6 @@ import java.util.Calendar
 import java.util.Locale
 
 
-class Region(
-    var Name: String,
-    var Id: String,
-    var image: Int,
-    var color: Int,
-    var TypeName: String,
-    var AvalancheWarningList: Array<AvalancheWarning>
-)
 
 private class ViewHolder(view: View) {
     val areaName: TextView = view.findViewById(R.id.area)

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    android:background="#1a1a1a">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daglig Skredvarsel"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Få daglige varsler om skredfare i din valgte region."
+            android:textSize="14sp"
+            android:textColor="#cccccc"
+            android:layout_marginBottom="24dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:background="#2d2d2d"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Aktiver Daglige Varsler"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+
+            <Switch
+                android:id="@+id/notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="#2d2d2d"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Varslingstidspunkt"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/time_picker_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tidspunkt: 07:00"
+                android:textAlignment="textStart"
+                android:gravity="start|center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@android:color/white"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="#3d3d3d"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Varsler er deaktivert"
+            android:textSize="14sp"
+            android:textColor="#888888"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/test_notification_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Testvarsel"
+            android:textColor="@android:color/white"
+            android:background="#FF6B35"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ℹ️ Informasjon"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Varsler sendes daglig på valgt tidspunkt\n• Varselet gjelder din valgte widget-region\n• Varselprioritet øker med farenivå\n• Sørg for at batterioptimalisering er deaktivert for denne appen"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
+            android:textColor="#cccccc"/>
+
+    </LinearLayout>
+</ScrollView>
