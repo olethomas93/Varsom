@@ -17,6 +17,7 @@ import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import com.appkungen.skredvarsel.models.*
+import kotlin.math.roundToInt
 
 /**
  * Improved widget provider with proper error handling and lifecycle management
@@ -30,6 +31,8 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         private const val TAG = "VarsomWidget"
         const val ACTION_REFRESH = "com.appkungen.skredvarsel.REFRESH"
         const val ACTION_OPEN_DETAIL = "com.appkungen.skredvarsel.OPEN_DETAIL"
+        private var minWidgetWidthDp: Float? = null
+        private var minWidgetHeightDp: Float? = null
 
         // Track ongoing updates to prevent duplicate requests
         private val ongoingUpdates = mutableSetOf<Int>()
@@ -74,9 +77,9 @@ class VarsomWidgetProvider : AppWidgetProvider() {
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
-        Log.d(TAG, "Widget $appWidgetId resized - updating layout")
+        Log.d(TAG, "Widget $appWidgetId resized")
 
-        // Oppdater widget med ny layout basert på nye dimensjoner
+        // Oppdater widget med ny layout
         updateWidget(context, appWidgetManager, appWidgetId)
     }
 
@@ -236,7 +239,7 @@ class VarsomWidgetProvider : AppWidgetProvider() {
 
         // Get appropriate layout based on widget size
         val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
-        val layoutId = selectLayout(options)
+        val layoutId = selectLayout(context,options)
 
         val views = RemoteViews(context.packageName, layoutId)
 
@@ -299,78 +302,72 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
-    private fun selectLayout(options: Bundle): Int {
+
+    private fun selectLayout(context: Context, options: Bundle): Int {
         val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
         val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)
         val maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 0)
         val maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0)
 
-        val width = if (maxWidth > 0) maxWidth else minWidth
-        val height = if (maxHeight > 0) maxHeight else minHeight
+        val width = maxOf(minWidth, maxWidth)
+        val height = maxOf(minHeight, maxHeight)
 
         Log.d(TAG, "Widget dimensions - Width: $width dp, Height: $height dp")
-        Log.d(TAG, "  Min: ${minWidth}x${minHeight}, Max: ${maxWidth}x${maxHeight}")
 
-        /*
-        MODERNE DEVICES (Pixel 9/10, Galaxy S24, etc):
-        - 1 celle ≈ 150-180 dp (høyoppløsning)
-        - 2 celler ≈ 300-360 dp
-        - 3 celler ≈ 450-540 dp
-        - 4 celler ≈ 600-720 dp
+        // Beregn celle-størrelse: skjermbredde / 4
+        val cellSize = getScreenWidthDp(context) / 4f
 
-        ELDRE DEVICES:
-        - 1 celle ≈ 70-80 dp
-        - 2 celler ≈ 140-160 dp
-        - 3 celler ≈ 210-240 dp
-        - 4 celler ≈ 280-320 dp
-        */
+        Log.d(TAG, "  Cell size: ${cellSize.toInt()}dp (screen width / 4)")
+
+        // Beregn antall celler (Float for nøyaktighet)
+        val cellWidthFloat = width / cellSize
+        val cellHeightFloat = height / cellSize
+
+        // Avrundede verdier for logging
+        val cellWidth = cellWidthFloat.roundToInt()
+        val cellHeight = cellHeightFloat.roundToInt()
+
+        Log.d(TAG, "  Grid: ${cellWidth}×${cellHeight} cells (exact: ${String.format("%.1f", cellWidthFloat)}×${String.format("%.1f", cellHeightFloat)})")
 
         val layout = when {
-            // 1x1 - Minste mulige widget
-            // Width < 200 dp (enten 1 celle på moderne enheter, eller 2-3 celler på gamle)
-            width < 200 && height < 200 -> {
-                Log.d(TAG, "→ Selected: varsom_small (1x1 tiny)")
-                R.layout.varsom_small
-            }
-
-            // 4x2+ eller større - Store widgets
-            // Width >= 600 dp (4 celler på moderne enheter)
-            width >= 600 && height >= 180 -> {
-                Log.d(TAG, "→ Selected: varsom_large2 (4x2+ large)")
+            // LARGE2: bredde >= 4 OG høyde >= 2
+            cellWidthFloat >= 4f && cellHeightFloat >= 2f -> {
+                Log.d(TAG, "→ Selected: varsom_large2 (width >= 4, height >= 2)")
                 R.layout.varsom_large2
             }
 
-            // 3x2+ - Medium-store brede widgets
-            // Width >= 450 dp (3 celler på moderne enheter)
-            width >= 450 -> {
-                Log.d(TAG, "→ Selected: varsom_medium (3x+ wide)")
+            // MEDIUM: bredde >= 4 OG høyde < 2
+            cellWidthFloat >= 4f && cellHeightFloat < 2f -> {
+                Log.d(TAG, "→ Selected: varsom_medium (width >= 4, height < 2)")
                 R.layout.varsom_medium
             }
 
-            // 2x2 eller 2x3 - VERTIKAL small2 layout
-            // Width 200-449 dp (2 celler bred på moderne enheter)
-            // Height >= 180 dp (2+ celler høy)
-            // DETTE ER FOR PIXEL 10: 352×200 = 2×2 celler
-            width >= 200 && width < 450 && height >= 180 -> {
-                Log.d(TAG, "→ Selected: varsom_small2 (2x2 or 2x3 vertical)")
+            // SMALL2: bredde >= 2 OG < 4
+            cellWidthFloat >= 2f && cellWidthFloat < 4f -> {
+                Log.d(TAG, "→ Selected: varsom_small2 (width 2-4)")
                 R.layout.varsom_small2
             }
 
-            // 2x1 - Horisontal stripe
-            // Width >= 200 men Height < 180 (2 bred × 1 høy)
-            width >= 200 && height < 180 -> {
-                Log.d(TAG, "→ Selected: varsom_small (2x1 horizontal)")
-                R.layout.varsom_small
-            }
-
-            // Fallback - Small
+            // SMALL: bredde < 2
             else -> {
-                Log.d(TAG, "→ Selected: varsom_small (fallback)")
+                Log.d(TAG, "→ Selected: varsom_small (width < 2)")
                 R.layout.varsom_small
             }
         }
 
         return layout
+    }
+
+    /**
+     * Hent skjermbredde i DP
+     */
+    private fun getScreenWidthDp(context: Context): Float {
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+
+        Log.d(TAG, "Screen width: ${displayMetrics.widthPixels}px = ${screenWidthDp.toInt()}dp")
+
+        return screenWidthDp
     }
 
     private fun populateWidgetViews(

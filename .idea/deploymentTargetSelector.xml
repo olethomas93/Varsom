@@ -4,10 +4,21 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-12-03T21:26:52.382057400Z">
+        <DropdownSelection timestamp="2026-01-12T21:37:30.841650Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=55301FDCR002FV" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\norby\.android\avd\Galaxy_s23.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="app.wear">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-03-19T22:21:52.521916300Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\norby\.android\avd\Galaxy_s23.avd" />
             </handle>
           </Target>
         </DropdownSelection>
