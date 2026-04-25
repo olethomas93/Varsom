@@ -9,10 +9,15 @@
     android:padding="0dp"
     android:theme="@style/Theme.VarsomWidget.AppWidgetContainer">
 
-    <!-- Top row: danger icon + number on the left, day/area/description on the right. -->
+    <!-- Top row: danger icon + number on the left, day/area/description on the right.
+         Uses layout_weight=1 so it absorbs whatever vertical space the timeline doesn't claim
+         — both when the timeline is visible (fills the upper portion) and when it's GONE
+         (fills the entire widget). Without this, a large widget would show empty root
+         background under the content. -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="10dp"
