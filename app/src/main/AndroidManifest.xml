@@ -3,6 +3,7 @@
 
     <!-- Existing permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -80,12 +81,19 @@
                 android:value="com.appkungen.skredvarsel.Configure" />
         </activity>
 
-        <!-- NEW: Forecast Detail activity -->
+        <!-- Forecast Detail activity: also serves as the app's launcher entry. When opened
+             without a forecastJson extra (i.e., from the launcher icon), it loads the forecast
+             itself using the user's stored region/coords. -->
         <activity
             android:name="com.appkungen.skredvarsel.ForecastDetailActivity"
-            android:label="Forecast Details"
-            android:exported="false"
-            android:theme="@style/Theme.Varsom" />
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Varsom">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
     </application>
 

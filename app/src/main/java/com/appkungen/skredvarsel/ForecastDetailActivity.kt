@@ -1,69 +1,97 @@
 package com.appkungen.skredvarsel
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.appkungen.skredvarsel.map.MapFragment
+import com.appkungen.skredvarsel.models.AvalancheReport
+import com.appkungen.skredvarsel.repository.AvalancheForecastRepository
 import com.appkungen.varsomwidget.R
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.appkungen.skredvarsel.models.*
+import kotlinx.coroutines.launch
 
 /**
- * ForecastDetailActivity with tabs for:
- * 1. Forecast details
- * 2. Widget settings
- * 3. Notifications
+ * Hosts the four tabs: forecast, widget settings, notifications, map.
+ *
+ * Two entry points:
+ *   - Widget tap: receives a `forecastJson` intent extra with the cached forecast.
+ *   - Launcher icon: no extras; we load the forecast ourselves via the repository
+ *     using the user's stored region/coordinates (or the default region as a fallback).
  */
 class ForecastDetailActivity : AppCompatActivity() {
 
-    private lateinit var forecasts: ArrayList<AvalancheReport>
+    private var forecasts: ArrayList<AvalancheReport> = ArrayList()
     private var regionId: String = "3011"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forecast_detail)
 
-        // Setup toolbar
         val toolbar = findViewById<MaterialToolbar>(R.id.detail_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        // Get forecast data from intent
+        val widgetPrefs = WidgetPreferences(this)
+        regionId = widgetPrefs.selectedRegion ?: "3011"
+
         val json = intent.getStringExtra("forecastJson")
-        forecasts = if (json != null) {
-            parseJsonToArrayList(json)
+        if (json != null) {
+            forecasts = parseJsonToArrayList(json)
+            setupTabs()
         } else {
-            ArrayList()
+            // Launched from app icon — load forecast ourselves.
+            loadForecastThenSetupTabs(widgetPrefs)
         }
+    }
 
-        // Get region ID
-        if (forecasts.isNotEmpty()) {
-            val widgetPrefs = WidgetPreferences(this)
-            regionId = widgetPrefs.selectedRegion ?: "3011"
+    private fun loadForecastThenSetupTabs(widgetPrefs: WidgetPreferences) {
+        findViewById<ProgressBar>(R.id.detail_loading)?.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val repo = AvalancheForecastRepository(this@ForecastDetailActivity)
+            val coords = widgetPrefs.fetchedCoord?.let { parseStoredCoord(it) }
+            when (val result = repo.getForecast(widgetPrefs.selectedRegion, coords)) {
+                is AvalancheForecastRepository.Result.Success -> {
+                    forecasts = ArrayList(result.data)
+                }
+                is AvalancheForecastRepository.Result.Error -> {
+                    result.cachedData?.let { forecasts = ArrayList(it) }
+                    Log.w("ForecastDetail", "Forecast load failed; showing cache=${result.cachedData != null}", result.exception)
+                }
+                else -> Unit
+            }
+            findViewById<ProgressBar>(R.id.detail_loading)?.visibility = View.GONE
+            setupTabs()
         }
+    }
 
-        // Setup tabs and ViewPager
-        setupTabs()
+    private fun parseStoredCoord(json: String): Pair<Double, Double>? = try {
+        val obj = org.json.JSONObject(json)
+        Pair(obj.getDouble("lat"), obj.getDouble("lng"))
+    } catch (e: Exception) {
+        null
     }
 
     private fun setupTabs() {
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
 
-        // Create adapter with forecasts and region ID
-        val adapter = ViewPagerAdapter(this, forecasts, regionId)
-        viewPager.adapter = adapter
+        viewPager.adapter = ViewPagerAdapter(this, forecasts, regionId)
 
-        // Connect TabLayout with ViewPager2
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "📊 Varsel"
                 1 -> "⚙️ Innstillinger"
                 2 -> "🔔 Varsler"
+                3 -> "🗺️ Kart"
                 else -> "Tab $position"
             }
         }.attach()
@@ -74,24 +102,20 @@ class ForecastDetailActivity : AppCompatActivity() {
         return true
     }
 
-    /**
-     * ViewPager adapter for the three tabs
-     */
     private inner class ViewPagerAdapter(
         activity: AppCompatActivity,
         private val forecasts: ArrayList<AvalancheReport>,
         private val regionId: String
     ) : FragmentStateAdapter(activity) {
 
-        override fun getItemCount(): Int = 3
+        override fun getItemCount(): Int = 4
 
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> ForecastFragment.newInstance(forecasts, regionId)
-                1 -> WidgetSettingsFragment()
-                2 -> NotificationsFragment()
-                else -> ForecastFragment.newInstance(forecasts, regionId)
-            }
+        override fun createFragment(position: Int): Fragment = when (position) {
+            0 -> ForecastFragment.newInstance(forecasts, regionId)
+            1 -> WidgetSettingsFragment()
+            2 -> NotificationsFragment()
+            3 -> MapFragment()
+            else -> ForecastFragment.newInstance(forecasts, regionId)
         }
     }
 }

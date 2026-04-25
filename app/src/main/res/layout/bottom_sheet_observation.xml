@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/settings_surface"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="20dp">
+
+    <!-- Drag handle -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@color/settings_divider" />
+
+    <TextView
+        android:id="@+id/obs_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="—"
+        android:textColor="@color/settings_text_tertiary"
+        android:textSize="12sp"
+        android:letterSpacing="0.06" />
+
+    <TextView
+        android:id="@+id/obs_region"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Region"
+        android:textColor="@color/settings_text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/obs_observer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Observer"
+        android:textColor="@color/settings_text_secondary"
+        android:textSize="13sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="12dp"
+        android:background="@color/settings_divider" />
+
+    <LinearLayout
+        android:id="@+id/obs_summary_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/obs_open_full"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:text="Vis fullstendig observasjon"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:backgroundTint="@color/settings_accent"
+        app:cornerRadius="12dp"
+        app:icon="@android:drawable/ic_menu_view"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/settings_text_primary" />
+</LinearLayout>

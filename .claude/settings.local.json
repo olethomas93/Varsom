@@ -5,7 +5,9 @@
       "Bash(./gradlew :varsomwear:assembleDebug)",
       "Bash(./gradlew :varsomwear:assembleDebug :app:assembleDebug)",
       "Bash(./gradlew :app:assembleRelease :varsomwear:assembleRelease)",
-      "Bash(./gradlew :app:assembleDebug :app:assembleRelease)"
+      "Bash(./gradlew :app:assembleDebug :app:assembleRelease)",
+      "Bash(./gradlew :app:assembleRelease)",
+      "Bash(./gradlew --stop)"
     ]
   }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M16,2 C8.27,2 2,8.27 2,16 C2,23.73 8.27,30 16,30 C23.73,30 30,23.73 30,16 C30,8.27 23.73,2 16,2 Z" />
+    <!-- Accent fill -->
+    <path
+        android:fillColor="#FFFF6B35"
+        android:pathData="M16,4 C9.37,4 4,9.37 4,16 C4,22.63 9.37,28 16,28 C22.63,28 28,22.63 28,16 C28,9.37 22.63,4 16,4 Z" />
+    <!-- Snowflake-ish dot -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M16,11 L18,16 L16,21 L14,16 Z M11,16 L16,14 L21,16 L16,18 Z" />
+</vector>

@@ -40,6 +40,10 @@
 -keep class com.appkungen.skredvarsel.models.** { *; }
 -keepclassmembers class com.appkungen.skredvarsel.models.** { *; }
 
+# Map / Regobs models — parsed reflectively by Gson, must survive R8.
+-keep class com.appkungen.skredvarsel.map.** { *; }
+-keepclassmembers class com.appkungen.skredvarsel.map.** { *; }
+
 # Specific model classes (explicit safety)
 -keep class com.appkungen.skredvarsel.models.AvalancheReport {
     <fields>;
