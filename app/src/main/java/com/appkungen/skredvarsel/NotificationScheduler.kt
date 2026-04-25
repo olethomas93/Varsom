@@ -81,8 +81,8 @@ object NotificationScheduler {
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Avalanche Forecast"
-            val descriptionText = "Daily avalanche danger level notifications"
+            val name = context.getString(R.string.notification_channel_name)
+            val descriptionText = context.getString(R.string.notification_channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -113,14 +113,12 @@ object NotificationScheduler {
             }
         )
 
-        // Get appropriate icon and color based on danger level
-        val icon = DangerLevelMapper.getLevelIcon(dangerLevel)
         val title = "Avalanche Warning: Level $dangerLevel"
 
         val notificationText = "$regionName - $description"
 
         val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.level_0) // Use a small icon version
+            .setSmallIcon(R.drawable.ic_notification_avalanche)
             .setContentTitle(title)
             .setContentText(notificationText)
             .setStyle(NotificationCompat.BigTextStyle().bigText(notificationText))

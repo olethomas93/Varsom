@@ -6,14 +6,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- NEW: Notification permissions -->
+    <!-- Notification permissions. No SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM — we use
+         inexact alarms and WorkManager, and USE_EXACT_ALARM risks Play Store rejection
+         for non-alarm-clock apps. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -42,7 +44,8 @@
             android:exported="false">
         </receiver>
 
-        <!-- NEW: Boot receiver -->
+        <!-- Boot receiver — reschedules the daily notification alarm after boot or app update.
+             AlarmManager alarms are cleared on both events. -->
         <receiver
             android:name="com.appkungen.skredvarsel.BootReceiver"
             android:enabled="true"
@@ -51,6 +54,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 

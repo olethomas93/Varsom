@@ -97,8 +97,8 @@ class WidgetSettingsFragment : Fragment() {
         if (coord != null) {
             try {
                 val obj = org.json.JSONObject(coord)
-                val lat = String.format("%.2f", obj.getDouble("lat"))
-                val lng = String.format("%.2f", obj.getDouble("lng"))
+                val lat = String.format(Locale.US, "%.2f", obj.getDouble("lat"))
+                val lng = String.format(Locale.US, "%.2f", obj.getDouble("lng"))
                 currentRegionText.text = "📍 Min Posisjon ($lat, $lng)"
             } catch (e: Exception) {
                 currentRegionText.text = "📍 Min Posisjon"

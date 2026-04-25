@@ -2,6 +2,7 @@ package com.appkungen.skredvarsel
 
 import okhttp3.*
 import java.io.IOException
+import java.util.Collections
 import java.util.concurrent.TimeUnit
 
 object NetworkModule {
@@ -14,7 +15,7 @@ object NetworkModule {
 }
 
 class HttpClient(private val client: OkHttpClient = NetworkModule.httpClient) {
-    private val activeCalls = mutableSetOf<Call>()
+    private val activeCalls: MutableSet<Call> = Collections.synchronizedSet(mutableSetOf())
 
     fun makeRequest(url: String, callback: (String?, Exception?) -> Unit): Call {
         val request = Request.Builder()
@@ -47,7 +48,9 @@ class HttpClient(private val client: OkHttpClient = NetworkModule.httpClient) {
     }
 
     fun cancelAll() {
-        activeCalls.forEach { it.cancel() }
-        activeCalls.clear()
+        synchronized(activeCalls) {
+            activeCalls.forEach { it.cancel() }
+            activeCalls.clear()
+        }
     }
 }

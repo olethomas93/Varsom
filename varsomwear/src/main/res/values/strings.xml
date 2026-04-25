@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">varsomwear</string>
-    <string name="tile_label" />
-    <string name="complication_label" />
+    <string name="app_name">Skredvarsel</string>
+    <string name="tile_label">Skredvarsel</string>
+    <string name="complication_label">Skredvarsel</string>
+    <string name="loading">Laster…</string>
+    <string name="error_generic">Feil ved lasting</string>
+    <string name="error_no_data">Kunne ikke hente varsel</string>
+    <string name="region_selected">Valgt: %1$s</string>
+    <string name="today">I dag</string>
 </resources>

@@ -14,15 +14,13 @@
     android:minHeight="60dp"
     android:minResizeWidth="60dp"
     android:minResizeHeight="60dp"
+    android:maxResizeWidth="500dp"
+    android:maxResizeHeight="280dp"
     android:widgetCategory="home_screen"
 
     android:targetCellWidth="2"
     android:targetCellHeight="2"
     >
-
-
-
-
 
 
 

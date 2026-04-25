@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName
  * Basic models (used across the app)
  */
 data class Region(
-    val Name: String,
-    val Id: String,
-    val image: Int,
-    val color: Int,
-    val TypeName: String,
-    val AvalancheWarningList: Array<AvalancheWarning>
+    @SerializedName("Name") val Name: String,
+    @SerializedName("Id") val Id: String,
+    @SerializedName("image") val image: Int,
+    @SerializedName("color") val color: Int,
+    @SerializedName("TypeName") val TypeName: String,
+    @SerializedName("AvalancheWarningList") val AvalancheWarningList: Array<AvalancheWarning>
 )
 
 data class AvalancheWarning(
-    val DangerLevel: String
+    @SerializedName("DangerLevel") val DangerLevel: String
 )
 
 /**

@@ -50,8 +50,6 @@ class VarsomTileService : TileService() {
     }
 
     override fun onTileRequest(requestParams: RequestBuilders.TileRequest): ListenableFuture<Tile> {
-        val future = Futures.immediateFuture(null as Tile?)
-
         return serviceScope.future {
             try {
                 val result = repo.getForecast()
@@ -332,7 +330,7 @@ class VarsomTileService : TileService() {
     private fun formatDate(validFrom: String): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("d. MMMM", Locale("no"))
+            val outputFormat = SimpleDateFormat("d. MMMM", Locale.forLanguageTag("no"))
             val date = inputFormat.parse(validFrom)
             outputFormat.format(date!!)
         } catch (e: Exception) {
@@ -343,7 +341,7 @@ class VarsomTileService : TileService() {
     private fun formatShortDay(validFrom: String): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("EEE", Locale("no"))
+            val outputFormat = SimpleDateFormat("EEE", Locale.forLanguageTag("no"))
             val date = inputFormat.parse(validFrom)
             outputFormat.format(date!!).replaceFirstChar { it.uppercase() }
         } catch (e: Exception) {

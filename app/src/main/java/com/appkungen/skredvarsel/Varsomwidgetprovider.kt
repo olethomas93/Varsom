@@ -6,36 +6,33 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.SizeF
 import android.widget.RemoteViews
-import androidx.annotation.RequiresApi
 import com.appkungen.skredvarsel.repository.AvalancheForecastRepository
 import com.appkungen.varsomwidget.R
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import com.appkungen.skredvarsel.models.*
-import kotlin.math.roundToInt
 
 /**
  * Improved widget provider with proper error handling and lifecycle management
  */
 class VarsomWidgetProvider : AppWidgetProvider() {
 
-    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private var repository: AvalancheForecastRepository? = null
-
     companion object {
         private const val TAG = "VarsomWidget"
         const val ACTION_REFRESH = "com.appkungen.skredvarsel.REFRESH"
         const val ACTION_OPEN_DETAIL = "com.appkungen.skredvarsel.OPEN_DETAIL"
-        private var minWidgetWidthDp: Float? = null
-        private var minWidgetHeightDp: Float? = null
+
+        // Shared scope — AppWidgetProvider instances are short-lived BroadcastReceivers,
+        // so the scope must outlive any one instance.
+        private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
         // Track ongoing updates to prevent duplicate requests
-        private val ongoingUpdates = mutableSetOf<Int>()
+        private val ongoingUpdates: MutableSet<Int> = ConcurrentHashMap.newKeySet()
     }
 
     override fun onUpdate(
@@ -47,26 +44,28 @@ class VarsomWidgetProvider : AppWidgetProvider() {
 
         Log.d(TAG, "onUpdate called for ${appWidgetIds.size} widgets")
 
-        appWidgetIds.forEach { appWidgetId ->
-            updateWidget(context, appWidgetManager, appWidgetId)
+        // goAsync keeps the process alive past onReceive return so the network
+        // fetch in updateWidget can complete.
+        val pendingResult = goAsync()
+        scope.launch {
+            try {
+                appWidgetIds.forEach { appWidgetId ->
+                    updateWidget(context, appWidgetManager, appWidgetId)
+                }
+            } finally {
+                pendingResult.finish()
+            }
         }
     }
 
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
         Log.d(TAG, "Widget enabled")
-
-        // Initialize repository
-        repository = AvalancheForecastRepository(context)
     }
 
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
         Log.d(TAG, "Widget disabled")
-
-        // Clean up
-        scope.cancel()
-        repository = null
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -76,17 +75,15 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-
         Log.d(TAG, "Widget $appWidgetId resized")
-
-        // Oppdater widget med ny layout
-        updateWidget(context, appWidgetManager, appWidgetId)
+        launchUpdate(appWidgetManager, intArrayOf(appWidgetId), context, forceRefresh = false)
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        super.onReceive(context, intent)
-
-        if (context == null || intent == null) return
+        if (context == null || intent == null) {
+            super.onReceive(context, intent)
+            return
+        }
 
         when (intent.action) {
             ACTION_REFRESH -> {
@@ -94,11 +91,10 @@ class VarsomWidgetProvider : AppWidgetProvider() {
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID
                 )
-
                 if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                     Log.d(TAG, "Manual refresh triggered for widget $appWidgetId")
                     val appWidgetManager = AppWidgetManager.getInstance(context)
-                    updateWidget(context, appWidgetManager, appWidgetId, forceRefresh = true)
+                    launchUpdate(appWidgetManager, intArrayOf(appWidgetId), context, forceRefresh = true)
                 }
             }
 
@@ -106,14 +102,12 @@ class VarsomWidgetProvider : AppWidgetProvider() {
                 val selectedRegion = intent.getStringExtra("selectedRegion")
                 if (selectedRegion != null) {
                     Log.d(TAG, "Region updated to $selectedRegion")
-                    val widgetPrefs = WidgetPreferences(context)
-                    widgetPrefs.selectedRegion = selectedRegion
-
+                    WidgetPreferences(context).selectedRegion = selectedRegion
                     val appWidgetManager = AppWidgetManager.getInstance(context)
-                    val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                    val ids = appWidgetManager.getAppWidgetIds(
                         ComponentName(context, VarsomWidgetProvider::class.java)
                     )
-                    onUpdate(context, appWidgetManager, appWidgetIds)
+                    launchUpdate(appWidgetManager, ids, context, forceRefresh = true)
                 }
             }
 
@@ -121,98 +115,95 @@ class VarsomWidgetProvider : AppWidgetProvider() {
                 val coord = intent.getStringExtra("fetchedCoord")
                 if (coord != null) {
                     Log.d(TAG, "Coordinates updated")
-                    val widgetPrefs = WidgetPreferences(context)
-                    widgetPrefs.fetchedCoord = coord
-
+                    WidgetPreferences(context).fetchedCoord = coord
                     val appWidgetManager = AppWidgetManager.getInstance(context)
-                    val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                    val ids = appWidgetManager.getAppWidgetIds(
                         ComponentName(context, VarsomWidgetProvider::class.java)
                     )
-                    onUpdate(context, appWidgetManager, appWidgetIds)
+                    launchUpdate(appWidgetManager, ids, context, forceRefresh = true)
                 }
+            }
+
+            else -> super.onReceive(context, intent)
+        }
+    }
+
+    private fun launchUpdate(
+        appWidgetManager: AppWidgetManager,
+        ids: IntArray,
+        context: Context,
+        forceRefresh: Boolean
+    ) {
+        val pendingResult = goAsync()
+        scope.launch {
+            try {
+                ids.forEach { id ->
+                    updateWidget(context, appWidgetManager, id, forceRefresh)
+                }
+            } finally {
+                pendingResult.finish()
             }
         }
     }
 
-    private fun updateWidget(
+    private suspend fun updateWidget(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
         forceRefresh: Boolean = false
     ) {
-        // Prevent duplicate updates
-        if (ongoingUpdates.contains(appWidgetId)) {
+        if (!ongoingUpdates.add(appWidgetId)) {
             Log.d(TAG, "Update already in progress for widget $appWidgetId")
             return
         }
 
-        ongoingUpdates.add(appWidgetId)
-
-        // Show loading state
         showLoadingState(context, appWidgetManager, appWidgetId)
 
-        // Fetch data
-        scope.launch {
-            try {
-                val repo = repository ?: AvalancheForecastRepository(context)
-                val widgetPrefs = WidgetPreferences(context)
+        try {
+            val repo = AvalancheForecastRepository(context)
+            val widgetPrefs = WidgetPreferences(context)
 
-                // Determine location
-                val coordinates = widgetPrefs.fetchedCoord?.let { coordString ->
-                    try {
-                        val json = org.json.JSONObject(coordString)
-                        Pair(
-                            json.getDouble("lat"),
-                            json.getDouble("lng")
+            val coordinates = widgetPrefs.fetchedCoord?.let { parseCoordinates(it) }
+            val regionId = widgetPrefs.selectedRegion
+
+            when (val result = repo.getForecast(regionId, coordinates, forceRefresh)) {
+                is AvalancheForecastRepository.Result.Success -> {
+                    Log.d(TAG, "Successfully fetched forecast")
+                    showForecast(context, appWidgetManager, appWidgetId, result.data)
+                }
+
+                is AvalancheForecastRepository.Result.Error -> {
+                    Log.e(TAG, "Error fetching forecast", result.exception)
+                    if (result.cachedData != null) {
+                        showForecast(
+                            context, appWidgetManager, appWidgetId,
+                            result.cachedData, isStale = true
                         )
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error parsing coordinates", e)
-                        null
+                    } else {
+                        showErrorState(
+                            context, appWidgetManager, appWidgetId,
+                            getErrorMessage(result.exception)
+                        )
                     }
                 }
 
-                val regionId = widgetPrefs.selectedRegion
-
-                // Fetch forecast
-                when (val result = repo.getForecast(regionId, coordinates, forceRefresh)) {
-                    is AvalancheForecastRepository.Result.Success -> {
-                        Log.d(TAG, "Successfully fetched forecast")
-                        showForecast(context, appWidgetManager, appWidgetId, result.data)
-                    }
-
-                    is AvalancheForecastRepository.Result.Error -> {
-                        Log.e(TAG, "Error fetching forecast", result.exception)
-
-                        if (result.cachedData != null) {
-                            // Show cached data with warning
-                            showForecast(
-                                context,
-                                appWidgetManager,
-                                appWidgetId,
-                                result.cachedData,
-                                isStale = true
-                            )
-                        } else {
-                            // Show error state
-                            showErrorState(
-                                context,
-                                appWidgetManager,
-                                appWidgetId,
-                                getErrorMessage(result.exception)
-                            )
-                        }
-                    }
-
-                    else -> {
-                        Log.w(TAG, "Unexpected result type")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Unexpected error updating widget", e)
-                showErrorState(context, appWidgetManager, appWidgetId, "Uventet feil")
-            } finally {
-                ongoingUpdates.remove(appWidgetId)
+                else -> Log.w(TAG, "Unexpected result type")
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Unexpected error updating widget", e)
+            showErrorState(context, appWidgetManager, appWidgetId, "Uventet feil")
+        } finally {
+            ongoingUpdates.remove(appWidgetId)
+        }
+    }
+
+    private fun parseCoordinates(coordString: String): Pair<Double, Double>? {
+        return try {
+            val json = org.json.JSONObject(coordString)
+            Pair(json.getDouble("lat"), json.getDouble("lng"))
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing coordinates", e)
+            null
         }
     }
 
@@ -237,22 +228,63 @@ class VarsomWidgetProvider : AppWidgetProvider() {
             return
         }
 
-        // Get appropriate layout based on widget size
-        val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
-        val layoutId = selectLayout(context,options)
-
-        val views = RemoteViews(context.packageName, layoutId)
-
-        // Today's forecast (index 1)
         val today = forecasts[1]
+        val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
 
-        // Populate widget views
+        // On API 31+ the launcher can ask the widget to render at multiple sizes
+        // (portrait, landscape, lock screen, …). Provide one RemoteViews per size and
+        // let the system pick. Falls back to a single layout on older devices.
+        val sizes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getWidgetSizes(options)
+        } else {
+            emptyList()
+        }
+
+        val remoteViews = if (sizes.isNotEmpty()) {
+            val byLayout = sizes.associateWith { size ->
+                buildRemoteViewsForSize(
+                    context, size.width.toInt(), size.height.toInt(),
+                    today, forecasts, appWidgetId, isStale
+                )
+            }
+            RemoteViews(byLayout)
+        } else {
+            val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250)
+            val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110)
+            buildRemoteViewsForSize(
+                context, width, height, today, forecasts, appWidgetId, isStale
+            )
+        }
+
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+    }
+
+    private fun buildRemoteViewsForSize(
+        context: Context,
+        widthDp: Int,
+        heightDp: Int,
+        today: AvalancheReport,
+        forecasts: List<AvalancheReport>,
+        appWidgetId: Int,
+        isStale: Boolean
+    ): RemoteViews {
+        val layoutId = selectLayout(widthDp, heightDp)
+        Log.d(TAG, "Selected layout for ${widthDp}×${heightDp}dp → ${context.resources.getResourceEntryName(layoutId)}")
+        val views = RemoteViews(context.packageName, layoutId)
         populateWidgetViews(views, today, forecasts, isStale)
-
-        // Set up click handlers
         setupClickHandlers(context, views, appWidgetId, forecasts)
+        return views
+    }
 
-        appWidgetManager.updateAppWidget(appWidgetId, views)
+    @Suppress("DEPRECATION")
+    private fun getWidgetSizes(options: Bundle): List<SizeF> {
+        val key = AppWidgetManager.OPTION_APPWIDGET_SIZES
+        val list: ArrayList<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            options.getParcelableArrayList(key, SizeF::class.java)
+        } else {
+            options.getParcelableArrayList(key)
+        }
+        return list ?: emptyList()
     }
 
     private fun showErrorState(
@@ -266,18 +298,9 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         views.setTextViewText(R.id.error_message, message)
 
         // Show last update time if available
-        val repo = repository ?: AvalancheForecastRepository(context)
+        val repo = AvalancheForecastRepository(context)
         val widgetPrefs = WidgetPreferences(context)
-
-        val coordinates = widgetPrefs.fetchedCoord?.let { coordString ->
-            try {
-                val json = org.json.JSONObject(coordString)
-                Pair(json.getDouble("lat"), json.getDouble("lng"))
-            } catch (e: Exception) {
-                null
-            }
-        }
-
+        val coordinates = widgetPrefs.fetchedCoord?.let { parseCoordinates(it) }
         val lastUpdate = repo.getLastUpdateTime(widgetPrefs.selectedRegion, coordinates)
         if (lastUpdate != null) {
             val timeAgo = getTimeAgo(lastUpdate)
@@ -303,71 +326,23 @@ class VarsomWidgetProvider : AppWidgetProvider() {
     }
 
 
-    private fun selectLayout(context: Context, options: Bundle): Int {
-        val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
-        val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)
-        val maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 0)
-        val maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0)
-
-        val width = maxOf(minWidth, maxWidth)
-        val height = maxOf(minHeight, maxHeight)
-
-        Log.d(TAG, "Widget dimensions - Width: $width dp, Height: $height dp")
-
-        // Beregn celle-størrelse: skjermbredde / 4
-        val cellSize = getScreenWidthDp(context) / 4f
-
-        Log.d(TAG, "  Cell size: ${cellSize.toInt()}dp (screen width / 4)")
-
-        // Beregn antall celler (Float for nøyaktighet)
-        val cellWidthFloat = width / cellSize
-        val cellHeightFloat = height / cellSize
-
-        // Avrundede verdier for logging
-        val cellWidth = cellWidthFloat.roundToInt()
-        val cellHeight = cellHeightFloat.roundToInt()
-
-        Log.d(TAG, "  Grid: ${cellWidth}×${cellHeight} cells (exact: ${String.format("%.1f", cellWidthFloat)}×${String.format("%.1f", cellHeightFloat)})")
-
-        val layout = when {
-            // LARGE2: bredde >= 4 OG høyde >= 2
-            cellWidthFloat >= 4f && cellHeightFloat >= 2f -> {
-                Log.d(TAG, "→ Selected: varsom_large2 (width >= 4, height >= 2)")
-                R.layout.varsom_large2
-            }
-
-            // MEDIUM: bredde >= 4 OG høyde < 2
-            cellWidthFloat >= 4f && cellHeightFloat < 2f -> {
-                Log.d(TAG, "→ Selected: varsom_medium (width >= 4, height < 2)")
-                R.layout.varsom_medium
-            }
-
-            // SMALL2: bredde >= 2 OG < 4
-            cellWidthFloat >= 2f && cellWidthFloat < 4f -> {
-                Log.d(TAG, "→ Selected: varsom_small2 (width 2-4)")
-                R.layout.varsom_small2
-            }
-
-            // SMALL: bredde < 2
-            else -> {
-                Log.d(TAG, "→ Selected: varsom_small (width < 2)")
-                R.layout.varsom_small
-            }
-        }
-
-        return layout
-    }
-
     /**
-     * Hent skjermbredde i DP
+     * Pick a layout from raw dp dimensions of the area we'll render in.
+     *
+     * Thresholds are tuned to roughly match the old "cells" boundaries on a typical 4-column
+     * launcher (≈70 dp/cell), but are stable across launchers because they no longer depend
+     * on screen width — only on the dp the system tells us we have.
+     *
+     *   width ≥ 250 AND height ≥ 110  → large2  (was: ≥4 cells × ≥2 cells)
+     *   width ≥ 250 AND height <  110 → medium  (was: ≥4 wide, short)
+     *   width ≥ 160                   → small2  (was: 2–4 cells wide)
+     *   else                          → small   (was: <2 cells wide)
      */
-    private fun getScreenWidthDp(context: Context): Float {
-        val displayMetrics = context.resources.displayMetrics
-        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-
-        Log.d(TAG, "Screen width: ${displayMetrics.widthPixels}px = ${screenWidthDp.toInt()}dp")
-
-        return screenWidthDp
+    private fun selectLayout(widthDp: Int, heightDp: Int): Int = when {
+        widthDp >= 250 && heightDp >= 110 -> R.layout.varsom_large2
+        widthDp >= 250                    -> R.layout.varsom_medium
+        widthDp >= 160                    -> R.layout.varsom_small2
+        else                              -> R.layout.varsom_small
     }
 
     private fun populateWidgetViews(

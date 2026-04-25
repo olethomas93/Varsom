@@ -25,13 +25,13 @@ class ForecastFragment : Fragment() {
     private val httpClient = HttpClient(NetworkModule.httpClient)
 
     companion object {
-        private const val ARG_FORECASTS = "forecasts"
+        private const val ARG_FORECASTS_JSON = "forecasts_json"
         private const val ARG_REGION_ID = "region_id"
 
         fun newInstance(forecasts: ArrayList<AvalancheReport>, regionId: String): ForecastFragment {
             val fragment = ForecastFragment()
             val args = Bundle()
-            args.putSerializable(ARG_FORECASTS, forecasts)
+            args.putString(ARG_FORECASTS_JSON, Gson().toJson(forecasts))
             args.putString(ARG_REGION_ID, regionId)
             fragment.arguments = args
             return fragment
@@ -41,9 +41,8 @@ class ForecastFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            @Suppress("UNCHECKED_CAST")
-            forecasts = it.getSerializable(ARG_FORECASTS) as? ArrayList<AvalancheReport>
-                ?: ArrayList()
+            val json = it.getString(ARG_FORECASTS_JSON)
+            forecasts = if (json != null) parseJsonToArrayList(json) else ArrayList()
             regionId = it.getString(ARG_REGION_ID) ?: "3011"
         }
     }
@@ -74,7 +73,7 @@ class ForecastFragment : Fragment() {
         if (forecasts.isEmpty()) return
 
         val report = forecasts[selectedDayIndex]
-        val regionName = report.RegionName.replace(" ", "%20")
+        val regionName = android.net.Uri.encode(report.RegionName)
         val date = report.ValidFrom.substring(0, 10)
 
         val url = "https://www.varsom.no/snoskred/varsling/varsel/$regionName/$date"

@@ -34,8 +34,6 @@ class WearSettingsActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "WearSettings"
-        private const val REGIONS_URL =
-            "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api/Region/1"
     }
 
     data class RegionResponse(
@@ -82,9 +80,9 @@ class WearSettingsActivity : ComponentActivity() {
                     Gson().fromJson<List<RegionResponse>>(body, type)
                 }
 
-                // Filtrer til bare A-regioner (de som starter med "3")
+                // Filtrer til bare A-regioner (varslingsregioner) — samme filter som telefon-appen
                 val avalancheRegions = regions
-                    .filter { it.id.startsWith("3") }
+                    .filter { it.typeName == "A" }
                     .sortedBy { it.name }
 
                 recyclerView.adapter = RegionAdapter(avalancheRegions) { region ->

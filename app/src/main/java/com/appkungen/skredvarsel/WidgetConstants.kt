@@ -9,20 +9,12 @@ object WidgetConstants {
     const val PREF_FETCHED_COORD = "fetchedCoord"
     const val ACTION_SET_REGION = "setRegion"
     const val ACTION_SET_COORD = "setCoord"
-    const val ACTION_DOUBLE_CLICK = "com.appkungen.skredvarsel.DOUBLE_CLICK"
     const val VARSOM_URL = "https://www.varsom.no"
     const val API_BASE_URL = "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api"
     const val LANG_CODE_NORWEGIAN = 1
     const val LANG_CODE_ENGLISH = 2
 
-    // Widget size thresholds in dp
-    const val SMALL_WIDTH_THRESHOLD = 140f
-    const val MEDIUM_WIDTH_THRESHOLD = 220f
-    const val SMALL_HEIGHT_THRESHOLD = 100f
-    const val MEDIUM_HEIGHT_THRESHOLD = 180f
-
     // Permission request codes
-    const val LOCATION_PERMISSION_REQUEST = 1
     const val GPS_ENABLE_REQUEST = 2
 }
 

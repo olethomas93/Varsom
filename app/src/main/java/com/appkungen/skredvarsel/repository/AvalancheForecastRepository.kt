@@ -160,9 +160,10 @@ class AvalancheForecastRepository(
 
     private fun buildApiUrl(regionId: String?, coordinates: Pair<Double, Double>?): String {
         val baseUrl = "https://api01.nve.no/hydrology/forecast/avalanche/v6.2.1/api"
-        val langCode = if (java.util.Locale.getDefault().toString().contains("nb")) 1 else 2
+        val lang = java.util.Locale.getDefault().language
+        val langCode = if (lang == "nb" || lang == "no" || lang == "nn") 1 else 2
 
-        val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+        val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
         val yesterday = java.util.Calendar.getInstance().apply {
             add(java.util.Calendar.DAY_OF_MONTH, -1)
         }
@@ -175,7 +176,10 @@ class AvalancheForecastRepository(
 
         return when {
             coordinates != null -> {
-                "$baseUrl/AvalancheWarningByCoordinates/Simple/${coordinates.first}/${coordinates.second}/$langCode/$yesterdayStr/$dayAfterTomorrowStr"
+                // Round to 3 decimals (~110m) so GPS jitter doesn't bust cache on every update.
+                val lat = String.format(java.util.Locale.US, "%.3f", coordinates.first)
+                val lng = String.format(java.util.Locale.US, "%.3f", coordinates.second)
+                "$baseUrl/AvalancheWarningByCoordinates/Simple/$lat/$lng/$langCode/$yesterdayStr/$dayAfterTomorrowStr"
             }
             regionId != null -> {
                 "$baseUrl/AvalancheWarningByRegion/Simple/$regionId/$langCode/$yesterdayStr/$dayAfterTomorrowStr"
@@ -193,7 +197,11 @@ class AvalancheForecastRepository(
 
     private fun buildCacheKey(regionId: String?, coordinates: Pair<Double, Double>?): String {
         return when {
-            coordinates != null -> "coord_${coordinates.first}_${coordinates.second}"
+            coordinates != null -> String.format(
+                java.util.Locale.US,
+                "coord_%.3f_%.3f",
+                coordinates.first, coordinates.second
+            )
             regionId != null -> "region_$regionId"
             else -> "region_3011"
         }
