@@ -3,7 +3,7 @@
     android:description="@string/app_widget_description"
     android:configure="com.appkungen.skredvarsel.Configure"
     android:widgetFeatures="reconfigurable|configuration_optional"
-    android:initialKeyguardLayout="@layout/varsom_large2"
+    android:initialKeyguardLayout="@layout/varsom_horizontal"
     android:initialLayout="@layout/configure"
     android:previewImage="@drawable/widget_preview"
     android:previewLayout="@layout/varsom_small"

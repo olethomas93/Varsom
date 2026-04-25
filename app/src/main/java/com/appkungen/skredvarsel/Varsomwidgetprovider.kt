@@ -27,6 +27,10 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         const val ACTION_REFRESH = "com.appkungen.skredvarsel.REFRESH"
         const val ACTION_OPEN_DETAIL = "com.appkungen.skredvarsel.OPEN_DETAIL"
 
+        // Below this height we hide the 4-day timeline row in varsom_horizontal,
+        // so a wide-but-short widget (≈4×1 cells) still looks clean.
+        private const val TIMELINE_MIN_HEIGHT_DP = 140
+
         // Shared scope — AppWidgetProvider instances are short-lived BroadcastReceivers,
         // so the scope must outlive any one instance.
         private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -271,7 +275,7 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         val layoutId = selectLayout(widthDp, heightDp)
         Log.d(TAG, "Selected layout for ${widthDp}×${heightDp}dp → ${context.resources.getResourceEntryName(layoutId)}")
         val views = RemoteViews(context.packageName, layoutId)
-        populateWidgetViews(views, today, forecasts, isStale)
+        populateWidgetViews(views, today, forecasts, isStale, heightDp)
         setupClickHandlers(context, views, appWidgetId, forecasts)
         return views
     }
@@ -329,27 +333,25 @@ class VarsomWidgetProvider : AppWidgetProvider() {
     /**
      * Pick a layout from raw dp dimensions of the area we'll render in.
      *
-     * Thresholds are tuned to roughly match the old "cells" boundaries on a typical 4-column
-     * launcher (≈70 dp/cell), but are stable across launchers because they no longer depend
-     * on screen width — only on the dp the system tells us we have.
+     * Three layouts cover everything; the horizontal one toggles its timeline row at runtime
+     * via [TIMELINE_MIN_HEIGHT_DP] so we don't need a separate "wide & short" XML.
      *
-     *   width ≥ 250 AND height ≥ 110  → large2  (was: ≥4 cells × ≥2 cells)
-     *   width ≥ 250 AND height <  110 → medium  (was: ≥4 wide, short)
-     *   width ≥ 160                   → small2  (was: 2–4 cells wide)
-     *   else                          → small   (was: <2 cells wide)
+     *   width ≥ 250  → varsom_horizontal  (timeline shown if height ≥ TIMELINE_MIN_HEIGHT_DP)
+     *   width ≥ 160  → varsom_small2
+     *   else         → varsom_small
      */
     private fun selectLayout(widthDp: Int, heightDp: Int): Int = when {
-        widthDp >= 250 && heightDp >= 110 -> R.layout.varsom_large2
-        widthDp >= 250                    -> R.layout.varsom_medium
-        widthDp >= 160                    -> R.layout.varsom_small2
-        else                              -> R.layout.varsom_small
+        widthDp >= 250 -> R.layout.varsom_horizontal
+        widthDp >= 160 -> R.layout.varsom_small2
+        else           -> R.layout.varsom_small
     }
 
     private fun populateWidgetViews(
         views: RemoteViews,
         today: AvalancheReport,
         forecasts: List<AvalancheReport>,
-        isStale: Boolean
+        isStale: Boolean,
+        heightDp: Int
     ) {
         // Set main forecast data
         views.setTextViewText(R.id.risk_number, today.DangerLevel)
@@ -358,16 +360,25 @@ class VarsomWidgetProvider : AppWidgetProvider() {
         views.setTextViewText(R.id.risk_description, today.MainText)
         views.setTextViewText(R.id.date, parseDateString(today.ValidFrom))
 
-        // Set icon
         val icon = DangerLevelMapper.getLevelIcon(today.DangerLevel)
         views.setImageViewResource(R.id.risk_image, icon)
 
-        // Set background color
         val bgColor = DangerLevelMapper.getWarningDrawable(today.DangerLevel)
         views.setInt(R.id.root, "setBackgroundResource", bgColor)
 
-        // Set forecast timeline if available in layout
-        if (forecasts.size >= 4) {
+        // Timeline row (varsom_horizontal only). Hidden when the widget is too short
+        // to render it cleanly, or when we don't have 4 days of data.
+        val showTimeline = forecasts.size >= 4 && heightDp >= TIMELINE_MIN_HEIGHT_DP
+        try {
+            views.setViewVisibility(
+                R.id.timeline_row,
+                if (showTimeline) android.view.View.VISIBLE else android.view.View.GONE
+            )
+        } catch (_: Exception) {
+            // Layout doesn't have timeline_row — fine, the small layouts don't.
+        }
+
+        if (showTimeline) {
             try {
                 views.setTextViewText(R.id.risk_yesterday, forecasts[0].DangerLevel)
                 views.setTextViewText(R.id.item_date_yesterday, parseAndFormatDate(forecasts[0].ValidFrom))
