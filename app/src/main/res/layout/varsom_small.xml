@@ -2,10 +2,10 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/warning_level2"
     android:gravity="center"
-    android:padding="2dp"
-    android:background="@color/warning_level2">
+    android:orientation="vertical"
+    android:padding="6dp">
 
     <!-- Row 1: Icon + Number -->
     <LinearLayout
@@ -18,41 +18,43 @@
             android:id="@+id/risk_image"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:src="@drawable/level_2"
-            android:layout_marginEnd="2dp"/>
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/level_2" />
 
         <TextView
             android:id="@+id/risk_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:includeFontPadding="false"
             android:text="2"
             android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:textSize="22sp"/>
+            android:textSize="28sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Row 2: Area name (small + truncated) -->
     <!-- Row 2: Day -->
     <TextView
         android:id="@+id/widget_current_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
         android:text="Lørdag"
         android:textColor="@android:color/black"
-        android:textSize="10sp"
-        android:maxLines="1"
-        android:gravity="center"/>
+        android:textSize="11sp" />
 
     <!-- Row 3: Area name -->
     <TextView
         android:id="@+id/area_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lyngen"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:textSize="10sp"
-        android:maxLines="1"
         android:ellipsize="end"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="Lyngen"
+        android:textColor="@android:color/black"
+        android:textSize="11sp"
+        android:textStyle="bold" />
 </LinearLayout>

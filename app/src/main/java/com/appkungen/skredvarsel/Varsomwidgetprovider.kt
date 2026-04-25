@@ -333,17 +333,15 @@ class VarsomWidgetProvider : AppWidgetProvider() {
     /**
      * Pick a layout from raw dp dimensions of the area we'll render in.
      *
-     * The horizontal threshold is 220 dp (not the "natural" 250) because Samsung One UI pads
-     * the widget container ~16–24 dp on each side, so a "full-width" widget there reports
-     * ~225 dp where Pixel reports ~280 dp for the same visual placement.
+     * Two layouts cover everything; the horizontal one toggles its timeline row at runtime
+     * based on [TIMELINE_MIN_HEIGHT_DP].
      *
-     *   width ≥ 220  → varsom_horizontal  (timeline shown if height ≥ TIMELINE_MIN_HEIGHT_DP)
-     *   width ≥ 160  → varsom_small2
-     *   else         → varsom_small
+     * The 220 dp threshold (not the "natural" 250) accommodates Samsung One UI, which pads
+     * the widget container ~16–24 dp on each side — so a 2-cell-wide widget there reports
+     * ~224 dp where Pixel reports ~150 dp.
      */
     private fun selectLayout(widthDp: Int, heightDp: Int): Int = when {
         widthDp >= 220 -> R.layout.varsom_horizontal
-        widthDp >= 160 -> R.layout.varsom_small2
         else           -> R.layout.varsom_small
     }
 
