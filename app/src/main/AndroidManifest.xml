@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/Theme.Varsom">
 
         <!-- Existing widget receiver -->
         <receiver
@@ -62,7 +62,7 @@
         <activity
             android:name="com.appkungen.skredvarsel.Configure"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.Varsom">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -74,7 +74,7 @@
             android:exported="false"
             android:label="Notification Settings"
             android:parentActivityName="com.appkungen.skredvarsel.Configure"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.Varsom">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appkungen.skredvarsel.Configure" />
@@ -85,7 +85,7 @@
             android:name="com.appkungen.skredvarsel.ForecastDetailActivity"
             android:label="Forecast Details"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.Varsom" />
 
     </application>
 

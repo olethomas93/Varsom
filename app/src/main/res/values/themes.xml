@@ -22,4 +22,20 @@
     <style name="Theme.VarsomWidget.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.VarsomWidget.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Application-wide dark Material theme. Required for MaterialCardView, MaterialButton,
+         SwitchMaterial in fragment_widget_settings/fragment_notifications/etc. -->
+    <style name="Theme.Varsom" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/settings_accent</item>
+        <item name="colorPrimaryVariant">@color/settings_accent_pressed</item>
+        <item name="colorOnPrimary">@color/settings_text_primary</item>
+        <item name="colorSecondary">@color/settings_accent</item>
+        <item name="colorOnSecondary">@color/settings_text_primary</item>
+        <item name="android:colorBackground">@color/settings_background</item>
+        <item name="colorSurface">@color/settings_surface</item>
+        <item name="colorOnSurface">@color/settings_text_primary</item>
+        <item name="android:windowBackground">@color/settings_background</item>
+        <item name="android:textColorPrimary">@color/settings_text_primary</item>
+        <item name="android:textColorSecondary">@color/settings_text_secondary</item>
+    </style>
 </resources>
