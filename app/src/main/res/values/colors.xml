@@ -22,4 +22,15 @@
     <color name="warning_level3">#88ff9a24</color>
     <color name="warning_level4">#88ff3131</color>
     <color name="warning_level0">#88aaaaaa</color>
+
+    <!-- Settings UI palette. Use these instead of scattered #1a1a1a / #2d2d2d / #cccccc -->
+    <color name="settings_background">#121212</color>
+    <color name="settings_surface">#1E1E1E</color>
+    <color name="settings_surface_elev">#2A2A2A</color>
+    <color name="settings_divider">#33FFFFFF</color>
+    <color name="settings_accent">#FF6B35</color>
+    <color name="settings_accent_pressed">#E55A24</color>
+    <color name="settings_text_primary">#FFFFFFFF</color>
+    <color name="settings_text_secondary">#B3FFFFFF</color>
+    <color name="settings_text_tertiary">#80FFFFFF</color>
 </resources>

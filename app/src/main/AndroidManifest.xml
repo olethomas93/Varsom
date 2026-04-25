@@ -71,9 +71,10 @@
         <!-- NEW: Notification Settings activity -->
         <activity
             android:name="com.appkungen.skredvarsel.NotificationSettingsActivity"
+            android:exported="false"
             android:label="Notification Settings"
             android:parentActivityName="com.appkungen.skredvarsel.Configure"
-            android:exported="false">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appkungen.skredvarsel.Configure" />

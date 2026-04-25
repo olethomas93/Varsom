@@ -17,7 +17,7 @@ import com.appkungen.varsomwidget.R
 
 class NotificationSettingsActivity : AppCompatActivity() {
 
-    private lateinit var notificationSwitch: Switch
+    private lateinit var notificationSwitch: CompoundButton
     private lateinit var timePickerButton: Button
     private lateinit var testNotificationButton: Button
     private lateinit var statusText: TextView
@@ -37,6 +37,13 @@ class NotificationSettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification_settings)
+
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(
+            R.id.notification_toolbar
+        )
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         widgetPrefs = WidgetPreferences(this)
 

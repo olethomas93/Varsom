@@ -4,64 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#1a1a1a"
+    android:background="@color/settings_background"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context="com.appkungen.skredvarsel.Configure">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/configure_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#2d2d2d"
-        android:elevation="8dp"
-        app:title="Select Region"
-        app:titleTextColor="@android:color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+        android:background="@color/settings_surface"
+        android:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="Velg region"
+        app:titleTextColor="@color/settings_text_primary" />
 
-    <SearchView
-        android:id="@+id/search_bar"
+    <!-- Search bar -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:background="#2d2d2d"
-        android:elevation="2dp"
-        android:padding="4dp"
-        android:iconifiedByDefault="false"
-        android:queryHint="Search regions..."
-        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/settings_surface"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/settings_divider"
+        app:strokeWidth="1dp">
 
-    <TextView
-        android:id="@+id/minposisjon"
+        <SearchView
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:iconifiedByDefault="false"
+            android:queryHint="Søk regioner…"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Use my location row -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"
-        android:background="#2d2d2d"
-        android:elevation="2dp"
-        android:text="@string/use_my_location"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="@color/settings_surface"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:rippleColor="@color/settings_accent"
+        app:strokeColor="@color/settings_divider"
+        app:strokeWidth="1dp">
 
+        <TextView
+            android:id="@+id/minposisjon"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:text="@string/use_my_location"
+            android:textColor="@color/settings_text_primary"
+            android:textSize="16sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Region list -->
     <ListView
         android:id="@+id/list_region"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="0dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:background="#1a1a1a"
-        android:divider="#3d3d3d"
+        android:layout_marginHorizontal="16dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:divider="@color/settings_divider"
         android:dividerHeight="1dp"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="false" />
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical" />
 
     <TextView
         android:id="@+id/varsomtekst"
@@ -70,7 +89,6 @@
         android:gravity="center"
         android:padding="16dp"
         android:text="@string/data_from_www_varsom_no"
-        android:textColor="#888888"
+        android:textColor="@color/settings_text_tertiary"
         android:textSize="12sp" />
-
 </LinearLayout>

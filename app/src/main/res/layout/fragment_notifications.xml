@@ -1,127 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
-    android:background="#1a1a1a">
+    android:background="@color/settings_background"
+    android:fitsSystemWindows="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="32dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Daglig Skredvarsel"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="6dp"
+            android:text="Daglig skredvarsel"
+            android:textColor="@color/settings_text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:text="Få daglige varsler om skredfare i din valgte region."
-            android:textSize="14sp"
-            android:textColor="#cccccc"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="@color/settings_text_secondary"
+            android:textSize="14sp" />
 
-        <LinearLayout
+        <!-- Toggle row -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:background="#2d2d2d"
-            android:elevation="2dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/settings_surface"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/settings_divider"
+            app:strokeWidth="1dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Aktiver Daglige Varsler"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"/>
-
-            <Switch
-                android:id="@+id/notification_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:background="#2d2d2d"
-            android:elevation="2dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Varslingstidspunkt"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:layout_marginBottom="8dp"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-            <Button
-                android:id="@+id/time_picker_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tidspunkt: 07:00"
-                android:textAlignment="textStart"
-                android:gravity="start|center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:textColor="@android:color/white"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:background="#3d3d3d"/>
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingEnd="12dp">
 
-        <TextView
-            android:id="@+id/status_text"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aktiver daglige varsler"
+                        android:textColor="@color/settings_text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/status_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Varsler er deaktivert"
+                        android:textColor="@color/settings_text_tertiary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/notification_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Time picker row -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Varsler er deaktivert"
-            android:textSize="14sp"
-            android:textColor="#888888"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/settings_surface"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/settings_divider"
+            app:strokeWidth="1dp">
 
-        <Button
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="Varslingstidspunkt"
+                    android:textColor="@color/settings_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/time_picker_button"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="start|center_vertical"
+                    android:paddingHorizontal="14dp"
+                    android:text="Tidspunkt: 07:00"
+                    android:textAllCaps="false"
+                    android:textColor="@color/settings_text_primary"
+                    android:textSize="15sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@android:drawable/ic_menu_recent_history"
+                    app:iconGravity="textStart"
+                    app:iconPadding="12dp"
+                    app:iconTint="@color/settings_accent"
+                    app:strokeColor="@color/settings_divider"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Test notification -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/test_notification_button"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Testvarsel"
-            android:textColor="@android:color/white"
-            android:background="#FF6B35"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ℹ️ Informasjon"
-            android:textSize="16sp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="24dp"
+            android:text="Send testvarsel"
+            android:textAllCaps="false"
+            android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
+            app:backgroundTint="@color/settings_accent"
+            app:cornerRadius="14dp"
+            app:icon="@android:drawable/ic_menu_send"
+            app:iconGravity="textStart"
+            app:iconPadding="10dp"
+            app:iconTint="@color/settings_text_primary" />
 
+        <!-- Info -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="• Varsler sendes daglig på valgt tidspunkt\n• Varselet gjelder din valgte widget-region\n• Varselprioritet øker med farenivå\n• Sørg for at batterioptimalisering er deaktivert for denne appen"
-            android:textSize="14sp"
-            android:lineSpacingExtra="4dp"
-            android:textColor="#cccccc"/>
+            android:layout_marginBottom="6dp"
+            android:text="INFORMASJON"
+            android:textColor="@color/settings_text_tertiary"
+            android:textSize="11sp"
+            android:letterSpacing="0.08" />
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/settings_surface"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/settings_divider"
+            app:strokeWidth="1dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="4dp"
+                android:padding="16dp"
+                android:text="• Varsler sendes daglig på valgt tidspunkt\n• Varselet gjelder din valgte widget-region\n• Varselprioritet øker med farenivå\n• Sørg for at batterioptimalisering er deaktivert for denne appen"
+                android:textColor="@color/settings_text_secondary"
+                android:textSize="14sp" />
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </ScrollView>

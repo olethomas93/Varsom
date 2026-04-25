@@ -12,7 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Switch
+import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,7 +23,7 @@ import com.appkungen.varsomwidget.R
 
 class NotificationsFragment : Fragment() {
 
-    private lateinit var notificationSwitch: Switch
+    private lateinit var notificationSwitch: CompoundButton
     private lateinit var timePickerButton: Button
     private lateinit var testNotificationButton: Button
     private lateinit var statusText: TextView

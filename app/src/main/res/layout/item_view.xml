@@ -1,68 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:minHeight="60dp"
     android:orientation="horizontal"
-    android:background="#1a1a1a"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:foreground="?attr/selectableItemBackground">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
 
     <TextView
         android:id="@+id/area"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Region Name"
         android:layout_weight="1"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:gravity="start|center_vertical" />
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:text="Region Name"
+        android:textColor="@color/settings_text_primary"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingStart="8dp">
 
         <TextView
             android:id="@+id/risk_today"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:text="3"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/warning_1"
             android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="3"
             android:textColor="@color/white"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/warning_1" />
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/risk_tomorrow"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:text="3"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/warning_1"
             android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="3"
             android:textColor="@color/white"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/warning_1" />
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/risk_dayafter"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:text="3"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/warning_1"
             android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="3"
             android:textColor="@color/white"
-            android:background="@drawable/warning_1" />
-
+            android:textSize="15sp"
+            android:textStyle="bold" />
     </LinearLayout>
-
 </LinearLayout>
