@@ -81,6 +81,17 @@
                 android:value="com.appkungen.skredvarsel.Configure" />
         </activity>
 
+        <activity
+            android:name="com.appkungen.skredvarsel.map.MapActivity"
+            android:exported="false"
+            android:label="Kart"
+            android:parentActivityName="com.appkungen.skredvarsel.ForecastDetailActivity"
+            android:theme="@style/Theme.Varsom">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appkungen.skredvarsel.ForecastDetailActivity" />
+        </activity>
+
         <!-- Forecast Detail activity: also serves as the app's launcher entry. When opened
              without a forecastJson extra (i.e., from the launcher icon), it loads the forecast
              itself using the user's stored region/coords. -->

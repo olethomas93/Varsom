@@ -1,7 +1,9 @@
 package com.appkungen.skredvarsel
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.appkungen.skredvarsel.map.MapFragment
+import com.appkungen.skredvarsel.map.MapActivity
 import com.appkungen.skredvarsel.models.AvalancheReport
 import com.appkungen.skredvarsel.repository.AvalancheForecastRepository
 import com.appkungen.varsomwidget.R
@@ -19,7 +21,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 
 /**
- * Hosts the four tabs: forecast, widget settings, notifications, map.
+ * Hosts the forecast, widget settings, and notifications tabs.
  *
  * Two entry points:
  *   - Widget tap: receives a `forecastJson` intent extra with the cached forecast.
@@ -39,6 +41,7 @@ class ForecastDetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        setupToolbar(toolbar)
 
         val widgetPrefs = WidgetPreferences(this)
         regionId = widgetPrefs.selectedRegion ?: "3011"
@@ -80,6 +83,22 @@ class ForecastDetailActivity : AppCompatActivity() {
         null
     }
 
+    private fun setupToolbar(toolbar: MaterialToolbar) {
+        toolbar.menu.add(0, R.id.open_map, 0, "Kart").apply {
+            setIcon(android.R.drawable.ic_dialog_map)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.open_map -> {
+                    startActivity(Intent(this, MapActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun setupTabs() {
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
@@ -91,7 +110,6 @@ class ForecastDetailActivity : AppCompatActivity() {
                 0 -> "📊 Varsel"
                 1 -> "⚙️ Innstillinger"
                 2 -> "🔔 Varsler"
-                3 -> "🗺️ Kart"
                 else -> "Tab $position"
             }
         }.attach()
@@ -108,13 +126,12 @@ class ForecastDetailActivity : AppCompatActivity() {
         private val regionId: String
     ) : FragmentStateAdapter(activity) {
 
-        override fun getItemCount(): Int = 4
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment = when (position) {
             0 -> ForecastFragment.newInstance(forecasts, regionId)
             1 -> WidgetSettingsFragment()
             2 -> NotificationsFragment()
-            3 -> MapFragment()
             else -> ForecastFragment.newInstance(forecasts, regionId)
         }
     }
