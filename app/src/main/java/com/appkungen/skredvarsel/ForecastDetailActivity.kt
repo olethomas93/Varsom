@@ -3,6 +3,7 @@ package com.appkungen.skredvarsel
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
@@ -41,7 +42,6 @@ class ForecastDetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        setupToolbar(toolbar)
 
         val widgetPrefs = WidgetPreferences(this)
         regionId = widgetPrefs.selectedRegion ?: "3011"
@@ -83,22 +83,6 @@ class ForecastDetailActivity : AppCompatActivity() {
         null
     }
 
-    private fun setupToolbar(toolbar: MaterialToolbar) {
-        toolbar.menu.add(0, R.id.open_map, 0, "Kart").apply {
-            setIcon(android.R.drawable.ic_dialog_map)
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        }
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.open_map -> {
-                    startActivity(Intent(this, MapActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
     private fun setupTabs() {
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
@@ -118,6 +102,21 @@ class ForecastDetailActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.forecast_detail_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.open_map -> {
+                startActivity(Intent(this, MapActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private inner class ViewPagerAdapter(
